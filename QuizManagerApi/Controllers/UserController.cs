@@ -20,42 +20,48 @@ namespace QuizManagerApi.Controllers
         public IEnumerable<User> Get()
         //public string Get()
         {
-            UsersConnection context = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.UsersConnection)) as UsersConnection;
+            UserService _userService = new UserService(HttpContext);
 
-            var data = context.GetAllUsers();
-            Console.WriteLine(data);
-            return data; 
+            var _users = _userService.GetAllUsers();
+            return _users; 
         }
 
         // GET api/user/5
-        [HttpGet("{id}")]
-        public User Get(int id)
+        [HttpGet("{Id}")]
+        public User Get(int Id)
         {
-            UsersConnection context = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.UsersConnection)) as UsersConnection;
+            UserService _userService = new UserService(HttpContext);
 
-            var data = context.GetUserByID(id);
-            Console.WriteLine(data);
-            return data;
+            var _user = _userService.GetUserById(Id);
+            return _user;
         }
 
         // POST api/user
         [HttpPost]
-        public bool Post([FromBody] LogInCredentials SuppliedCredentials)
+        public bool Post([FromBody] LogInCredentials SuppliedCredentials )
         {
-            UserService _userService = new UserService();
+            UserService _userService = new UserService(HttpContext);
 
-            UsersConnection _usersConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.UsersConnection)) as UsersConnection;
-
-            var user = _usersConnection.GetUserByUsername(SuppliedCredentials.Username);
+            var _user = _userService.GetUserByUsername(SuppliedCredentials.Username);
 
             var actualCredentials = new LogInCredentials();
 
-            actualCredentials.Username = user.UserName;
-            actualCredentials.Password = user.Password;
+            actualCredentials.Username = _user.UserName;
+            actualCredentials.Password = _user.Password;
 
-            // return $"Supplied: {SuppliedCredentials.Username} + {SuppliedCredentials.Password}, Actual: {actualCredentials.Username} + {actualCredentials.Password}";
 
             return _userService.ValidateCredentials(SuppliedCredentials, actualCredentials);
+
+        }
+
+        // POST api/user
+        [HttpPost]
+        [Route("[action]")]
+        public List<User> PostNewUser([FromBody] User NewUser)
+        {
+            UserService _userService = new UserService(HttpContext);
+
+            return _userService.CreateUser(NewUser);
 
         }
 

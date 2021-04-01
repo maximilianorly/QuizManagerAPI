@@ -65,7 +65,7 @@ namespace QuizManagerApi.Domain.Connections
         }
 
 
-        public User GetUserByID(int id)
+        public User GetUserById(int id)
         {
 
             try
@@ -143,6 +143,39 @@ namespace QuizManagerApi.Domain.Connections
                 Debug.WriteLine(e);
             }
             return null;
+        }
+
+        public List<User> CreateUser(User NewUser)
+        {
+            try
+            {
+                //bool exists = ExistingCompany(company.company_name);
+
+                //if (!exists)
+                //{
+                    using (MySqlConnection conn = GetConnection())
+                    {
+                        conn.Open();
+                        MySqlCommand cmd = new MySqlCommand($"INSERT INTO Users (Users_FirstName, Users_LastName, Users_Username, Users_Password) " +
+                            $"VALUES (@Users_FirstName, @Users_LastName, @Users_Username, @Users_Password)", conn);
+
+                        using (cmd)
+                        {
+                            cmd.Parameters.AddWithValue("@Users_FirstName", $"{NewUser.FirstName}");
+                            cmd.Parameters.AddWithValue("@Users_LastName", $"{NewUser.LastName}");
+                            cmd.Parameters.AddWithValue("@Users_Username", $"{NewUser.UserName}");
+                            cmd.Parameters.AddWithValue("@Users_Password", $"{NewUser.Password}");
+                            cmd.ExecuteNonQuery();
+                        }
+
+                    }
+                //}
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+            return GetAllUsers();
         }
     }
 }
