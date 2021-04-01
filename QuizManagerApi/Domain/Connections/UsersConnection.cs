@@ -145,31 +145,51 @@ namespace QuizManagerApi.Domain.Connections
             return null;
         }
 
+        public bool IsExistingUser(string Username)
+        {
+            bool hasRows = false;
+
+            try
+            {
+
+                using (MySqlConnection conn = GetConnection())
+                {
+                    conn.Open();
+                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Username = '{Username}'", conn);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        hasRows = reader.HasRows;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+            return hasRows;
+        }
+
         public List<User> CreateUser(User NewUser)
         {
             try
             {
-                //bool exists = ExistingCompany(company.company_name);
+                using (MySqlConnection conn = GetConnection())
+                {
+                    conn.Open();
+                    MySqlCommand cmd = new MySqlCommand($"INSERT INTO Users (Users_FirstName, Users_LastName, Users_Username, Users_Password) " +
+                        $"VALUES (@Users_FirstName, @Users_LastName, @Users_Username, @Users_Password)", conn);
 
-                //if (!exists)
-                //{
-                    using (MySqlConnection conn = GetConnection())
+                    using (cmd)
                     {
-                        conn.Open();
-                        MySqlCommand cmd = new MySqlCommand($"INSERT INTO Users (Users_FirstName, Users_LastName, Users_Username, Users_Password) " +
-                            $"VALUES (@Users_FirstName, @Users_LastName, @Users_Username, @Users_Password)", conn);
-
-                        using (cmd)
-                        {
-                            cmd.Parameters.AddWithValue("@Users_FirstName", $"{NewUser.FirstName}");
-                            cmd.Parameters.AddWithValue("@Users_LastName", $"{NewUser.LastName}");
-                            cmd.Parameters.AddWithValue("@Users_Username", $"{NewUser.UserName}");
-                            cmd.Parameters.AddWithValue("@Users_Password", $"{NewUser.Password}");
-                            cmd.ExecuteNonQuery();
-                        }
-
+                        cmd.Parameters.AddWithValue("@Users_FirstName", $"{NewUser.FirstName}");
+                        cmd.Parameters.AddWithValue("@Users_LastName", $"{NewUser.LastName}");
+                        cmd.Parameters.AddWithValue("@Users_Username", $"{NewUser.UserName}");
+                        cmd.Parameters.AddWithValue("@Users_Password", $"{NewUser.Password}");
+                        cmd.ExecuteNonQuery();
                     }
-                //}
+
+                }
             }
             catch (Exception e)
             {

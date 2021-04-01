@@ -54,14 +54,17 @@ namespace QuizManagerApi.Controllers
 
         }
 
-        // POST api/user
+        // POST api/user/PostNewUser
         [HttpPost]
         [Route("[action]")]
-        public List<User> PostNewUser([FromBody] User NewUser)
+        public IEnumerable<User> PostNewUser([FromBody] User NewUser)
         {
             UserService _userService = new UserService(HttpContext);
 
-            return _userService.CreateUser(NewUser);
+            if (!_userService.IsExistingUser(NewUser.UserName))
+                return _userService.CreateUser(NewUser);
+            else
+                return _userService.GetAllUsers();
 
         }
 

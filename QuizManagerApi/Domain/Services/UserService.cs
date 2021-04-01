@@ -54,6 +54,13 @@ namespace QuizManagerApi.Domain.Services
                 return false;
         }
 
+        public bool IsExistingUser(string Username)
+        {
+            UsersConnection _usersConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.UsersConnection)) as UsersConnection;
+
+            return _usersConnection.IsExistingUser(Username);
+        }
+
         public List<User> CreateUser(User NewUser)
         {
             UsersConnection _usersConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.UsersConnection)) as UsersConnection;
