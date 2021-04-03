@@ -29,6 +29,7 @@ namespace QuizManagerApi
             services.AddControllers();
             services.Add(new ServiceDescriptor(typeof(UsersConnection), new UsersConnection(Configuration.GetConnectionString(""))));
             services.Add(new ServiceDescriptor(typeof(UserAccessConnection), new UserAccessConnection(Configuration.GetConnectionString(""))));
+            services.Add(new ServiceDescriptor(typeof(AccessLevelConnection), new AccessLevelConnection(Configuration.GetConnectionString(""))));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

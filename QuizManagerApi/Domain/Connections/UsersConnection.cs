@@ -1,4 +1,5 @@
 ﻿using QuizManagerApi.Domain.Models.User;
+using QuizManagerApi.Domain.Models.UserHasAccess;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -19,13 +20,11 @@ namespace QuizManagerApi.Domain.Connections
 
         private MySqlConnection GetConnection()
         {
-            //return new MySqlConnection(ConnectionString);
             return new MySqlConnection("Server=localhost; port=3306; Database=QuizManager; Uid=root; Pwd=password");
         }
 
 
         public List<User> GetAllUsers()
-        //public string GetAllUsers()
         {
             List<User> list = new List<User>();
 
@@ -35,14 +34,13 @@ namespace QuizManagerApi.Domain.Connections
                 {
                     conn.Open();
                     MySqlCommand cmd = new MySqlCommand("SELECT * FROM Users", conn);
-                    //conn.Open();
 
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
 
-                            User user = new User
+                            User _user = new User
                             {
                                 Id = Convert.ToInt32(reader["Users_Id"]),
                                 FirstName = reader["Users_FirstName"].ToString(),
@@ -51,7 +49,7 @@ namespace QuizManagerApi.Domain.Connections
                                 Password = reader["Users_Password"].ToString()
                             };
 
-                            list.Add(user);
+                            list.Add(_user);
                         }
                     }
                 }
@@ -61,7 +59,6 @@ namespace QuizManagerApi.Domain.Connections
                 Debug.WriteLine(e);
             }
             return list;
-            //return "Hello there";
         }
 
 
@@ -170,7 +167,7 @@ namespace QuizManagerApi.Domain.Connections
             return hasRows;
         }
 
-        public List<User> CreateUser(User NewUser)
+        public User CreateUser(User NewUser)
         {
             try
             {
@@ -188,14 +185,14 @@ namespace QuizManagerApi.Domain.Connections
                         cmd.Parameters.AddWithValue("@Users_Password", $"{NewUser.Password}");
                         cmd.ExecuteNonQuery();
                     }
-
                 }
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e);
             }
-            return GetAllUsers();
+
+            return GetUserByUsername(NewUser.UserName);
         }
     }
 }

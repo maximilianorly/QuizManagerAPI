@@ -62,5 +62,31 @@ namespace QuizManagerApi.Domain.Connections
             }
             return null;
         }
+
+        public UserHasAccess MapNewUserToAccessLevel(int NewUserId, int AccessLevel)
+        {
+            try
+            {
+                using (MySqlConnection conn = GetConnection())
+                {
+                    conn.Open();
+                    MySqlCommand cmd = new MySqlCommand($"INSERT INTO UserHasAccess (AccessLevels_AccessLevels_Id, Users_Users_Id) " +
+                        $"VALUES (@AccessLevels_AccessLevels_Id, @Users_Users_Id)", conn);
+
+                    using (cmd)
+                    {
+                        cmd.Parameters.AddWithValue("@AccessLevels_AccessLevels_Id", $"{AccessLevel}");
+                        cmd.Parameters.AddWithValue("@Users_Users_Id", $"{NewUserId}");
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+
+            return GetUserAccessByUserId(NewUserId);
+        }
     }
 }

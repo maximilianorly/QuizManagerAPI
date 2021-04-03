@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using QuizManagerApi.Domain.Models.LogInCredentials;
 using QuizManagerApi.Domain.Models.User;
+using QuizManagerApi.Domain.Models.UserHasAccess;
 using QuizManagerApi.Domain.Connections;
 using System.Collections.Generic;
 
@@ -61,13 +62,25 @@ namespace QuizManagerApi.Domain.Services
             return _usersConnection.IsExistingUser(Username);
         }
 
-        public List<User> CreateUser(User NewUser)
+        public User CreateUser(User NewUser)
         {
             UsersConnection _usersConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.UsersConnection)) as UsersConnection;
 
-            
-            var _users = _usersConnection.CreateUser(NewUser);
-            return _users;
+            var _user = _usersConnection.CreateUser(NewUser);
+            return _user;
+        }
+
+        public UserHasAccess MapNewUserToAccessLevel(int NewUserId, int AccessLevel)
+        {
+            if (AccessLevel == 0)
+            {
+                AccessLevel = 3;
+            }
+            UserAccessConnection _userAccessConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.UserAccessConnection)) as UserAccessConnection;
+
+            UserHasAccess _userAccessDetail = _userAccessConnection.MapNewUserToAccessLevel(NewUserId, AccessLevel);
+
+            return _userAccessDetail;
         }
     }
 }

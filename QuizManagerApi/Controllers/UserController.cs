@@ -57,13 +57,17 @@ namespace QuizManagerApi.Controllers
         // POST api/user/PostNewUser
         [HttpPost]
         [Route("[action]")]
-        public IEnumerable<User> PostNewUser([FromBody] User NewUser)
+        public IEnumerable<User> PostNewUser([FromBody] User NewUser, int AccessLevel)
         {
             UserService _userService = new UserService(HttpContext);
+            AccessLevelService _accessLevelService = new AccessLevelService(HttpContext);
 
             if (!_userService.IsExistingUser(NewUser.UserName))
-                return _userService.CreateUser(NewUser);
-            else
+            {
+                User _newUser = _userService.CreateUser(NewUser);
+                _userService.MapNewUserToAccessLevel(_newUser.Id, AccessLevel);
+            }
+            
                 return _userService.GetAllUsers();
 
         }
