@@ -1,6 +1,6 @@
-﻿namespace QuizManagerApi.Domain.Models.User
+﻿namespace QuizManagerApi.Domain.Models.QuizQuestion
 {
-    public class Ques
+    public class QuizQuestion
     {
         public int Id { get; set; }
         public string Question { get; set; }
