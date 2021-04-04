@@ -13,5 +13,8 @@
     <Folder Include="Domain\Models\" />
     <Folder Include="Domain\Connections\" />
     <Folder Include="Domain\Services\" />
+    <Folder Include="Controllers\Quiz\" />
+    <Folder Include="Domain\Services\Quiz\" />
+    <Folder Include="Domain\Connections\Quiz\" />
   </ItemGroup>
 </Project>
