@@ -1,4 +1,4 @@
-﻿using QuizManagerApi.Domain.Models.QuizQuestion;
+﻿using QuizManagerApi.Domain.Models.AnswerOption;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -6,12 +6,12 @@ using System.Diagnostics;
 
 namespace QuizManagerApi.Domain.Connections
 {
-    public class QuestionConnection
+    public class AnswerOptionConnection
     {
         public string ConnectionString { get; set; }
 
 
-        public QuestionConnection(string connectionString)
+        public AnswerOptionConnection(string connectionString)
         {
             this.ConnectionString = connectionString;
         }
@@ -22,31 +22,32 @@ namespace QuizManagerApi.Domain.Connections
             return new MySqlConnection("Server=localhost; port=3306; Database=QuizManager; Uid=root; Pwd=password");
         }
 
-        public List<QuizQuestion> GetAllQuizQuestions()
+        public List<AnswerOption> GetAllAnswerOptions()
         {
-            List<QuizQuestion> list = new List<QuizQuestion>();
+            List<AnswerOption> list = new List<AnswerOption>();
 
             try
             {
                 using (MySqlConnection conn = GetConnection())
                 {
                     conn.Open();
-                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM Questions", conn);
+                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM Question_AnswerOptions", conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            QuizQuestion _quizQuestion = new QuizQuestion
+                            AnswerOption _answerOption = new AnswerOption
                             {
-                                Id = Convert.ToInt32(reader["Questions_Id"]),
-                                Question = reader["Questions_Question"].ToString(),
-                                IsActive = reader.GetBoolean("Questions_IsActive"),
-                                Created = reader["Questions_Created"].ToString(),
-                                Modified = reader["Questions_Modified"].ToString()
+                                Id = Convert.ToInt32(reader["AnswerOption_Id"]),
+                                QuestionId = Convert.ToInt32(reader["Questions_Questions_Id"]),
+                                IsCorrectOption = reader.GetBoolean("AnswerOption_IsCorrectOption"),
+                                Option = reader["AnswerOption_Option"].ToString(),
+                                Created = reader["AnswerOptions_Created"].ToString(),
+                                Modified = reader["AnswerOptions_Modified"].ToString()
                             };
 
-                            list.Add(_quizQuestion);
+                            list.Add(_answerOption);
                         }
                     }
                 }
@@ -58,14 +59,16 @@ namespace QuizManagerApi.Domain.Connections
             return list;
         }
 
-        public QuizQuestion GetQuizQuestionById(int Id)
+        public List<AnswerOption> GetAllAnswerOptionsForQuestion(int QuestionId)
         {
+            List<AnswerOption> list = new List<AnswerOption>();
+
             try
             {
                 using (MySqlConnection conn = GetConnection())
                 {
                     conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Questions WHERE Questions_Id = '{Id}'", conn);
+                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Question_AnswerOptions WHERE Questions_Questions_Id = {QuestionId}", conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -73,14 +76,17 @@ namespace QuizManagerApi.Domain.Connections
                         {
                             while (reader.Read())
                             {
-                                return new QuizQuestion()
+                                AnswerOption _answerOption = new AnswerOption
                                 {
-                                    Id = Convert.ToInt32(reader["Questions_Id"]),
-                                    Question = reader["Questions_Question"].ToString(),
-                                    IsActive = reader.GetBoolean("Questions_IsActive"),
-                                    Created = reader["Questions_Created"].ToString(),
-                                    Modified = reader["Questions_Modified"].ToString()
+                                    Id = Convert.ToInt32(reader["AnswerOption_Id"]),
+                                    QuestionId = Convert.ToInt32(reader["Questions_Questions_Id"]),
+                                    IsCorrectOption = reader.GetBoolean("AnswerOption_IsCorrectOption"),
+                                    Option = reader["AnswerOption_Option"].ToString(),
+                                    Created = reader["AnswerOptions_Created"].ToString(),
+                                    Modified = reader["AnswerOptions_Modified"].ToString()
                                 };
+
+                                list.Add(_answerOption);
                             }
                         }
                         else
@@ -94,10 +100,10 @@ namespace QuizManagerApi.Domain.Connections
             {
                 Debug.WriteLine(e);
             }
-            return null;
+            return list;
         }
 
-        public QuizQuestion GetQuestionDataByQuestion(QuizQuestion Question)
+        public AnswerOption GetAnswerOptionDataByAnswerOption(AnswerOption NewAnswerOption)
         {
             try
             {
@@ -106,7 +112,7 @@ namespace QuizManagerApi.Domain.Connections
                     conn.Open();
                     // Must find a way to allow quote and apostraphes in questions without SQL error
                     // To get this method to succeed, the front end application will search string and apply a \ before posting.
-                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Questions WHERE Questions_Question = \"{Question.Question}\"", conn);
+                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Question_AnswerOptions WHERE AnswerOption_Option = \"{NewAnswerOption.Option}\"", conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -114,13 +120,14 @@ namespace QuizManagerApi.Domain.Connections
                         {
                             while (reader.Read())
                             {
-                                return new QuizQuestion()
+                                return new AnswerOption()
                                 {
-                                    Id = Convert.ToInt32(reader["Questions_Id"]),
-                                    Question = reader["Questions_Question"].ToString(),
-                                    IsActive = reader.GetBoolean("Questions_IsActive"),
-                                    Created = reader["Questions_Created"].ToString(),
-                                    Modified = reader["Questions_Modified"].ToString()
+                                    Id = Convert.ToInt32(reader["AnswerOption_Id"]),
+                                    QuestionId = Convert.ToInt32(reader["Questions_Questions_Id"]),
+                                    IsCorrectOption = reader.GetBoolean("AnswerOption_IsCorrectOption"),
+                                    Option = reader["AnswerOption_Option"].ToString(),
+                                    Created = reader["AnswerOptions_Created"].ToString(),
+                                    Modified = reader["AnswerOptions_Modified"].ToString()
                                 };
                             }
                         }
@@ -138,7 +145,7 @@ namespace QuizManagerApi.Domain.Connections
             return null;
         }
 
-        public QuizQuestion CreateNewQuizQuestion(QuizQuestion Question)
+        public AnswerOption CreateNewAnswerOption(AnswerOption NewAnswerOption)
         {
             try
             {
@@ -146,13 +153,14 @@ namespace QuizManagerApi.Domain.Connections
                 {
                     conn.Open();
                     // For MVP new question IsActive will be default posted as true, after MVP development will accommodate for Admin to select active questions from a list of all questions in DB
-                    MySqlCommand cmd = new MySqlCommand($"INSERT INTO Questions (Questions_Question, Questions_IsActive) " +
-                        $"VALUES (@Questions_Question, @Questions_IsActive)", conn);
+                    MySqlCommand cmd = new MySqlCommand($"INSERT INTO Question_AnswerOptions (Questions_Questions_Id, AnswerOption_IsCorrectOption, AnswerOption_Option) " +
+                        $"VALUES (@Questions_Questions_Id, @AnswerOption_IsCorrectOption, @AnswerOption_Option)", conn);
 
                     using (cmd)
                     {
-                        cmd.Parameters.AddWithValue("@Questions_Question", $"{Question.Question}");
-                        cmd.Parameters.AddWithValue("@Questions_IsActive", $"{Convert.ToInt32(Question.IsActive)}");
+                        cmd.Parameters.AddWithValue("@Questions_Questions_Id", $"{NewAnswerOption.QuestionId}");
+                        cmd.Parameters.AddWithValue("@AnswerOption_IsCorrectOption", $"{Convert.ToInt32(NewAnswerOption.IsCorrectOption)}");
+                        cmd.Parameters.AddWithValue("@AnswerOption_Option", $"{NewAnswerOption.Option}");
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -162,10 +170,10 @@ namespace QuizManagerApi.Domain.Connections
                 Debug.WriteLine(e);
             }
 
-            return GetQuestionDataByQuestion(Question);
+            return GetAnswerOptionDataByAnswerOption(NewAnswerOption);
         }
 
-        public bool isNewQuestionCreationSuccessful(int QuestionId)
+        public bool isNewAnswerOptionCreationSuccessful(int AnswerOptionId)
         {
             bool hasRows = false;
 
@@ -175,7 +183,7 @@ namespace QuizManagerApi.Domain.Connections
                 using (MySqlConnection conn = GetConnection())
                 {
                     conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Questions WHERE Questions_Id = '{QuestionId}'", conn);
+                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Question_AnswerOptions WHERE AnswerOption_Id = {AnswerOptionId}", conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
