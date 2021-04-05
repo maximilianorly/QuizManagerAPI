@@ -26,6 +26,9 @@ namespace QuizManagerApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add cross origin
+            services.AddCors();
+
             services.AddControllers();
             services.Add(new ServiceDescriptor(typeof(UsersConnection), new UsersConnection(Configuration.GetConnectionString(""))));
             services.Add(new ServiceDescriptor(typeof(UserAccessConnection), new UserAccessConnection(Configuration.GetConnectionString(""))));
@@ -41,6 +44,11 @@ namespace QuizManagerApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // Use cross origin
+            app.UseCors(bldr => bldr.WithOrigins("http://localhost:8080")
+                .WithMethods("GET", "POST")
+                .AllowAnyHeader());
 
             app.UseHttpsRedirection();
 

@@ -46,9 +46,9 @@ namespace QuizManagerApi.Domain.Services
         {
             AnswerOptionConnection _answerOptionConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.AnswerOptionConnection)) as AnswerOptionConnection;
 
-            var _answerOption = _answerOptionConnection.isNewAnswerOptionCreationSuccessful(AnswerOptionId);
+            bool _isExistingAnswer = _answerOptionConnection.isNewAnswerOptionCreationSuccessful(AnswerOptionId);
 
-            return _answerOption;
+            return _isExistingAnswer;
         }
     }
 }

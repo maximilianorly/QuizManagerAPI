@@ -38,20 +38,33 @@ namespace QuizManagerApi.Controllers
 
         // POST api/user
         [HttpPost]
-        public bool Post([FromBody] LogInCredentials SuppliedCredentials )
+        public User Post([FromBody] LogInCredentials SuppliedCredentials )
         {
             UserService _userService = new UserService(HttpContext);
 
             var _user = _userService.GetUserByUsername(SuppliedCredentials.Username);
 
-            var actualCredentials = new LogInCredentials();
+            if (_user == null)
+            {
+                return null;
+            }
+            else
+            {
+                var actualCredentials = new LogInCredentials();
 
-            actualCredentials.Username = _user.UserName;
-            actualCredentials.Password = _user.Password;
+                actualCredentials.Username = _user.UserName;
+                actualCredentials.Password = _user.Password;
 
 
-            return _userService.ValidateCredentials(SuppliedCredentials, actualCredentials);
+                bool _isAuthenticCredentials = _userService.ValidateCredentials(SuppliedCredentials, actualCredentials);
 
+                if (!_isAuthenticCredentials)
+                {
+                    return null;
+                }
+
+                return _user;
+            }
         }
 
         // POST api/user/PostNewUser
