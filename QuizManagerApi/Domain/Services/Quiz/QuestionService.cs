@@ -24,6 +24,15 @@ namespace QuizManagerApi.Domain.Services
             return _quizQuestions;
         }
 
+        public IEnumerable<QuizQuestion> GetAllActiveQuestions()
+        {
+            QuestionConnection _questionConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.QuestionConnection)) as QuestionConnection;
+
+            var _quizQuestions = _questionConnection.GetAllActiveQuizQuestions();
+
+            return _quizQuestions;
+        }
+
         public QuizQuestion GetQuestionById(int Id)
         {
             QuestionConnection _questionConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.QuestionConnection)) as QuestionConnection;

@@ -57,6 +57,42 @@ namespace QuizManagerApi.Domain.Connections
             }
             return list;
         }
+        
+        public List<QuizQuestion> GetAllActiveQuizQuestions()
+        {
+            List<QuizQuestion> list = new List<QuizQuestion>();
+
+            try
+            {
+                using (MySqlConnection conn = GetConnection())
+                {
+                    conn.Open();
+                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM Questions WHERE Questions_IsActive = 1", conn);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            QuizQuestion _quizQuestion = new QuizQuestion
+                            {
+                                Id = Convert.ToInt32(reader["Questions_Id"]),
+                                Question = reader["Questions_Question"].ToString(),
+                                IsActive = reader.GetBoolean("Questions_IsActive"),
+                                Created = reader["Questions_Created"].ToString(),
+                                Modified = reader["Questions_Modified"].ToString()
+                            };
+
+                            list.Add(_quizQuestion);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+            return list;
+        }
 
         public QuizQuestion GetQuizQuestionById(int Id)
         {
