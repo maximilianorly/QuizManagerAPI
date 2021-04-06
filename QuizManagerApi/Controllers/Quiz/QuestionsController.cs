@@ -33,6 +33,15 @@ namespace QuizManagerApi.Controllers.Quiz
             return _question;
         }
 
+        [HttpGet("GetAllActiveQuestions")]
+        public IEnumerable<QuizQuestion> GetAllActiveQuestions()
+        {
+            QuestionService _questionService = new QuestionService(HttpContext);
+
+            var _questions = _questionService.GetAllActiveQuestions();
+            return _questions;
+        }
+
         // POST api/Questions
         // IsActive Must be supplied as boolean, not 0 or 1 in postman??
         [HttpPost]
