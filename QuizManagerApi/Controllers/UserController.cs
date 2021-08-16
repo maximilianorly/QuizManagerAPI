@@ -56,7 +56,8 @@ namespace QuizManagerApi.Controllers
                 actualCredentials.Password = _user.Password;
 
 
-                bool _isAuthenticCredentials = _userService.ValidateCredentials(SuppliedCredentials, actualCredentials);
+                //bool _isAuthenticCredentials = _userService.ValidateCredentials(SuppliedCredentials, actualCredentials);
+                bool _isAuthenticCredentials = false;
 
                 if (!_isAuthenticCredentials)
                 {

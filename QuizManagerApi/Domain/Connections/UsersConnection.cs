@@ -9,18 +9,11 @@ namespace QuizManagerApi.Domain.Connections
 {
     public class UsersConnection
     {
-        public string ConnectionString { get; set; }
+        private readonly MySqlConnection _conn;
 
-
-        public UsersConnection(string connectionString)
+        public UsersConnection(MySqlConnection conn)
         {
-            this.ConnectionString = connectionString;
-        }
-
-
-        private MySqlConnection GetConnection()
-        {
-            return new MySqlConnection("Server=localhost; port=3306; Database=QuizManager; Uid=root; Pwd=password");
+            _conn = conn;
         }
 
 
@@ -30,29 +23,28 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
-                using (MySqlConnection conn = GetConnection())
+                _conn.Open();
+                MySqlCommand cmd = new MySqlCommand("SELECT * FROM Users", _conn);
+
+                using (var reader = cmd.ExecuteReader())
                 {
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM Users", conn);
-
-                    using (var reader = cmd.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+
+                        User _user = new User
                         {
+                            Id = Convert.ToInt32(reader["Users_Id"]),
+                            FirstName = reader["Users_FirstName"].ToString(),
+                            LastName = reader["Users_LastName"].ToString(),
+                            UserName = reader["Users_Username"].ToString(),
+                            Password = reader["Users_Password"].ToString()
+                        };
 
-                            User _user = new User
-                            {
-                                Id = Convert.ToInt32(reader["Users_Id"]),
-                                FirstName = reader["Users_FirstName"].ToString(),
-                                LastName = reader["Users_LastName"].ToString(),
-                                UserName = reader["Users_Username"].ToString(),
-                                Password = reader["Users_Password"].ToString()
-                            };
-
-                            list.Add(_user);
-                        }
+                        list.Add(_user);
                     }
                 }
+
+                _conn.Close();
             }
             catch (Exception e)
             {
@@ -67,10 +59,8 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
-                using (MySqlConnection conn = GetConnection())
-                {
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Id = {id}", conn);
+                    _conn.Open();
+                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Id = {id}", _conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -93,7 +83,8 @@ namespace QuizManagerApi.Domain.Connections
                             return null;
                         }
                     }
-                }
+
+                _conn.Close();
             }
             catch (Exception e)
             {
@@ -107,10 +98,8 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
-                using (MySqlConnection conn = GetConnection())
-                {
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Username = '{Username}'", conn);
+                    _conn.Open();
+                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Username = '{Username}'", _conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -133,7 +122,6 @@ namespace QuizManagerApi.Domain.Connections
                             return null;
                         }
                     }
-                }
             }
             catch (Exception e)
             {
@@ -148,17 +136,13 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
-
-                using (MySqlConnection conn = GetConnection())
-                {
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Username = '{Username}'", conn);
+                    _conn.Open();
+                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Username = '{Username}'", _conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
                         hasRows = reader.HasRows;
                     }
-                }
             }
             catch (Exception e)
             {
@@ -171,20 +155,17 @@ namespace QuizManagerApi.Domain.Connections
         {
             try
             {
-                using (MySqlConnection conn = GetConnection())
-                {
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"INSERT INTO Users (Users_FirstName, Users_LastName, Users_Username, Users_Password) " +
-                        $"VALUES (@Users_FirstName, @Users_LastName, @Users_Username, @Users_Password)", conn);
+                _conn.Open();
+                MySqlCommand cmd = new MySqlCommand($"INSERT INTO Users (Users_FirstName, Users_LastName, Users_Username, Users_Password) " +
+                    $"VALUES (@Users_FirstName, @Users_LastName, @Users_Username, @Users_Password)", _conn);
 
-                    using (cmd)
-                    {
-                        cmd.Parameters.AddWithValue("@Users_FirstName", $"{NewUser.FirstName}");
-                        cmd.Parameters.AddWithValue("@Users_LastName", $"{NewUser.LastName}");
-                        cmd.Parameters.AddWithValue("@Users_Username", $"{NewUser.UserName}");
-                        cmd.Parameters.AddWithValue("@Users_Password", $"{NewUser.Password}");
-                        cmd.ExecuteNonQuery();
-                    }
+                using (cmd)
+                {
+                    cmd.Parameters.AddWithValue("@Users_FirstName", $"{NewUser.FirstName}");
+                    cmd.Parameters.AddWithValue("@Users_LastName", $"{NewUser.LastName}");
+                    cmd.Parameters.AddWithValue("@Users_Username", $"{NewUser.UserName}");
+                    cmd.Parameters.AddWithValue("@Users_Password", $"{NewUser.Password}");
+                    cmd.ExecuteNonQuery();
                 }
             }
             catch (Exception e)
