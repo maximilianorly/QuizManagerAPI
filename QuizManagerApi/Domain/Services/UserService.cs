@@ -28,16 +28,16 @@ namespace QuizManagerApi.Domain.Services
         //    UsersConnection = usersConnection;
         //    UserAccessConnection = userAccessConnection;
         //}
-
-        public User Login(User oUser)
+        
+        public User Login(LogInCredentials oUser)
         {
-            var user = Global.Users.SingleOrDefault(u => u.UserName == oUser.UserName);
+            var user = Global.Users.SingleOrDefault(u => u.UserName == oUser.Username);
 
             bool isValidPassword = BCrypt.Net.BCrypt.Verify(oUser.Password, user.Password);
 
             if (isValidPassword)
             {
-                return user;
+                return GetUserByUsername(oUser.Username);
             }
             return null;
         }
@@ -58,6 +58,17 @@ namespace QuizManagerApi.Domain.Services
             //UsersConnection _usersConnection = UsersConnection;
 
             List<User> _users = _usersConnection.GetAllUsers();
+
+            if (!Global.Users.Except(_users).Any())
+            {
+                foreach(User _user in _users)
+                {
+                    if (!Global.Users.Contains(_user))
+                    {
+                        Global.Users.Add(_user);
+                    }
+                }
+            }
 
             return _users.AsEnumerable();
         }

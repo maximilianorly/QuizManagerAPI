@@ -43,9 +43,9 @@ namespace QuizManagerApi
 
 
 
+            //services.AddSingleton<IUserService, UserService>();
             services.Add(new ServiceDescriptor(typeof(UsersConnection), new UsersConnection(conn)));
             services.Add(new ServiceDescriptor(typeof(UserAccessConnection), new UserAccessConnection(Configuration.GetConnectionString(""))));
-            //services.AddScoped<IUserService, UserService>();
             services.Add(new ServiceDescriptor(typeof(AccessLevelConnection), new AccessLevelConnection(Configuration.GetConnectionString(""))));
             services.Add(new ServiceDescriptor(typeof(QuestionConnection), new QuestionConnection(Configuration.GetConnectionString(""))));
             services.Add(new ServiceDescriptor(typeof(AnswerOptionConnection), new AnswerOptionConnection(Configuration.GetConnectionString(""))));

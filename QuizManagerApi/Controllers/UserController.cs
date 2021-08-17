@@ -7,6 +7,7 @@ using QuizManagerApi.Domain.Services;
 using QuizManagerApi.Domain.Models.User;
 using QuizManagerApi.Domain.Models.LogInCredentials;
 using Microsoft.AspNetCore.Mvc;
+using QuizManagerApi.Domain.IService;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,10 +16,17 @@ namespace QuizManagerApi.Controllers
     [Route("api/[controller]")]
     public class UserController : Controller
     {
+
+        //IUserService _userService = null;
+
+        //public UserController(IUserService userService)
+        //{
+        //    _userService = userService;
+        //}
+
         // GET: api/user
         [HttpGet]
         public IEnumerable<User> Get()
-        //public string Get()
         {
             UserService _userService = new UserService(HttpContext);
 
@@ -33,6 +41,28 @@ namespace QuizManagerApi.Controllers
             UserService _userService = new UserService(HttpContext);
 
             var _user = _userService.GetUserById(Id);
+            return _user;
+        }
+
+        // GET api/user/Login
+        [HttpGet("Login")]
+        public User Login([FromBody] LogInCredentials oUser)
+        {
+            UserService _userService = new UserService(HttpContext);
+
+            User _user = _userService.Login(oUser);
+
+            return _user;
+        }
+
+        // POST api/user/Signup
+        [HttpPost("Signup")]
+        public User SignUp([FromBody] User oUser)
+        {
+            UserService _userService = new UserService(HttpContext);
+
+            User _user = _userService.SignUp(oUser);
+
             return _user;
         }
 

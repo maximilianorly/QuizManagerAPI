@@ -122,6 +122,8 @@ namespace QuizManagerApi.Domain.Connections
                             return null;
                         }
                     }
+
+                _conn.Close();
             }
             catch (Exception e)
             {
@@ -143,6 +145,8 @@ namespace QuizManagerApi.Domain.Connections
                     {
                         hasRows = reader.HasRows;
                     }
+
+                    _conn.Close();
             }
             catch (Exception e)
             {
@@ -167,6 +171,8 @@ namespace QuizManagerApi.Domain.Connections
                     cmd.Parameters.AddWithValue("@Users_Password", $"{NewUser.Password}");
                     cmd.ExecuteNonQuery();
                 }
+
+                _conn.Close();
             }
             catch (Exception e)
             {
