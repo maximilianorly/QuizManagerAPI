@@ -23,7 +23,10 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
-                _conn.Open();
+                if (_conn.State == System.Data.ConnectionState.Closed)
+                {
+                    _conn.Open();
+                }
                 MySqlCommand cmd = new MySqlCommand("SELECT * FROM Users", _conn);
 
                 using (var reader = cmd.ExecuteReader())
@@ -59,8 +62,11 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
+                if (_conn.State == System.Data.ConnectionState.Closed)
+                {
                     _conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Id = {id}", _conn);
+                }
+                MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Id = {id}", _conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -98,8 +104,11 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
+                if (_conn.State == System.Data.ConnectionState.Closed)
+                {
                     _conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Username = '{Username}'", _conn);
+                }
+                MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Username = '{Username}'", _conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -138,8 +147,11 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
+                if (_conn.State == System.Data.ConnectionState.Closed)
+                {
                     _conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Username = '{Username}'", _conn);
+                }
+                MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Username = '{Username}'", _conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -159,7 +171,10 @@ namespace QuizManagerApi.Domain.Connections
         {
             try
             {
-                _conn.Open();
+                if (_conn.State == System.Data.ConnectionState.Closed)
+                {
+                    _conn.Open();
+                }
                 MySqlCommand cmd = new MySqlCommand($"INSERT INTO Users (Users_FirstName, Users_LastName, Users_Username, Users_Password) " +
                     $"VALUES (@Users_FirstName, @Users_LastName, @Users_Username, @Users_Password)", _conn);
 

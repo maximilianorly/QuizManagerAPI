@@ -54,6 +54,7 @@ namespace QuizManagerApi.Domain.Connections
                             return null;
                         }
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)
@@ -79,6 +80,7 @@ namespace QuizManagerApi.Domain.Connections
                         cmd.Parameters.AddWithValue("@Users_Users_Id", $"{NewUserId}");
                         cmd.ExecuteNonQuery();
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)

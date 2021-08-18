@@ -45,7 +45,7 @@ namespace QuizManagerApi.Controllers
         }
 
         // GET api/user/Login
-        [HttpGet("Login")]
+        [HttpPost("Login")]
         public User Login([FromBody] LogInCredentials oUser)
         {
             UserService _userService = new UserService(HttpContext);

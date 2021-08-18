@@ -50,6 +50,7 @@ namespace QuizManagerApi.Domain.Connections
                             list.Add(_answerOption);
                         }
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)
@@ -94,6 +95,7 @@ namespace QuizManagerApi.Domain.Connections
                             return null;
                         }
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)
@@ -136,6 +138,7 @@ namespace QuizManagerApi.Domain.Connections
                             return null;
                         }
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)
@@ -163,6 +166,7 @@ namespace QuizManagerApi.Domain.Connections
                         cmd.Parameters.AddWithValue("@AnswerOption_Option", $"{NewAnswerOption.Option}");
                         cmd.ExecuteNonQuery();
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)
@@ -189,6 +193,7 @@ namespace QuizManagerApi.Domain.Connections
                     {
                         hasRows = reader.HasRows;
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)

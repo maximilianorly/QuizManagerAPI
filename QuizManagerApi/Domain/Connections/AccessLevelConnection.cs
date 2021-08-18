@@ -47,6 +47,7 @@ namespace QuizManagerApi.Domain.Connections
                             list.Add(_accessLevel);
                         }
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)

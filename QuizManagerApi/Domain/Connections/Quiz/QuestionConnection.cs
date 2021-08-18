@@ -49,6 +49,7 @@ namespace QuizManagerApi.Domain.Connections
                             list.Add(_quizQuestion);
                         }
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)
@@ -85,6 +86,7 @@ namespace QuizManagerApi.Domain.Connections
                             list.Add(_quizQuestion);
                         }
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)
@@ -124,6 +126,7 @@ namespace QuizManagerApi.Domain.Connections
                             return null;
                         }
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)
@@ -165,6 +168,7 @@ namespace QuizManagerApi.Domain.Connections
                             return null;
                         }
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)
@@ -191,6 +195,7 @@ namespace QuizManagerApi.Domain.Connections
                         cmd.Parameters.AddWithValue("@Questions_IsActive", $"{Convert.ToInt32(Question.IsActive)}");
                         cmd.ExecuteNonQuery();
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)
@@ -217,6 +222,7 @@ namespace QuizManagerApi.Domain.Connections
                     {
                         hasRows = reader.HasRows;
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)
