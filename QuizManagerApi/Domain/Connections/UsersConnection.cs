@@ -9,18 +9,11 @@ namespace QuizManagerApi.Domain.Connections
 {
     public class UsersConnection
     {
-        public string ConnectionString { get; set; }
+        private readonly MySqlConnection _conn;
 
-
-        public UsersConnection(string connectionString)
+        public UsersConnection(MySqlConnection conn)
         {
-            this.ConnectionString = connectionString;
-        }
-
-
-        private MySqlConnection GetConnection()
-        {
-            return new MySqlConnection("Server=localhost; port=3306; Database=QuizManager; Uid=root; Pwd=password");
+            _conn = conn;
         }
 
 
@@ -30,29 +23,32 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
-                using (MySqlConnection conn = GetConnection())
+                if (_conn.State == System.Data.ConnectionState.Closed)
                 {
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM Users", conn);
+                    _conn.Open();
+                }
+                MySqlCommand cmd = new MySqlCommand("SELECT * FROM Users", _conn);
 
-                    using (var reader = cmd.ExecuteReader())
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+
+                        User _user = new User
                         {
+                            Id = Convert.ToInt32(reader["Users_Id"]),
+                            FirstName = reader["Users_FirstName"].ToString(),
+                            LastName = reader["Users_LastName"].ToString(),
+                            UserName = reader["Users_Username"].ToString(),
+                            Password = reader["Users_Password"].ToString(),
+                            IsLoggedIn = Convert.ToBoolean(reader["Users_IsLoggedIn"])
+                        };
 
-                            User _user = new User
-                            {
-                                Id = Convert.ToInt32(reader["Users_Id"]),
-                                FirstName = reader["Users_FirstName"].ToString(),
-                                LastName = reader["Users_LastName"].ToString(),
-                                UserName = reader["Users_Username"].ToString(),
-                                Password = reader["Users_Password"].ToString()
-                            };
-
-                            list.Add(_user);
-                        }
+                        list.Add(_user);
                     }
                 }
+
+                _conn.Close();
             }
             catch (Exception e)
             {
@@ -67,10 +63,11 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
-                using (MySqlConnection conn = GetConnection())
+                if (_conn.State == System.Data.ConnectionState.Closed)
                 {
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Id = {id}", conn);
+                    _conn.Open();
+                }
+                MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Id = {id}", _conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -84,7 +81,8 @@ namespace QuizManagerApi.Domain.Connections
                                     FirstName = reader["Users_FirstName"].ToString(),
                                     LastName = reader["Users_LastName"].ToString(),
                                     UserName = reader["Users_Username"].ToString(),
-                                    Password = reader["Users_Password"].ToString()
+                                    Password = reader["Users_Password"].ToString(),
+                                    IsLoggedIn = Convert.ToBoolean(reader["Users_IsLoggedIn"])
                                 };
                             }
                         }
@@ -93,7 +91,8 @@ namespace QuizManagerApi.Domain.Connections
                             return null;
                         }
                     }
-                }
+
+                _conn.Close();
             }
             catch (Exception e)
             {
@@ -107,10 +106,11 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
-                using (MySqlConnection conn = GetConnection())
+                if (_conn.State == System.Data.ConnectionState.Closed)
                 {
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Username = '{Username}'", conn);
+                    _conn.Open();
+                }
+                MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Username = '{Username}'", _conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -124,7 +124,8 @@ namespace QuizManagerApi.Domain.Connections
                                     FirstName = reader["Users_FirstName"].ToString(),
                                     LastName = reader["Users_LastName"].ToString(),
                                     UserName = reader["Users_Username"].ToString(),
-                                    Password = reader["Users_Password"].ToString()
+                                    Password = reader["Users_Password"].ToString(),
+                                    IsLoggedIn = Convert.ToBoolean(reader["Users_IsLoggedIn"])
                                 };
                             }
                         }
@@ -133,7 +134,8 @@ namespace QuizManagerApi.Domain.Connections
                             return null;
                         }
                     }
-                }
+
+                _conn.Close();
             }
             catch (Exception e)
             {
@@ -148,17 +150,18 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
-
-                using (MySqlConnection conn = GetConnection())
+                if (_conn.State == System.Data.ConnectionState.Closed)
                 {
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Username = '{Username}'", conn);
+                    _conn.Open();
+                }
+                MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Users WHERE Users_Username = '{Username}'", _conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
                         hasRows = reader.HasRows;
                     }
-                }
+
+                    _conn.Close();
             }
             catch (Exception e)
             {
@@ -171,21 +174,23 @@ namespace QuizManagerApi.Domain.Connections
         {
             try
             {
-                using (MySqlConnection conn = GetConnection())
+                if (_conn.State == System.Data.ConnectionState.Closed)
                 {
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"INSERT INTO Users (Users_FirstName, Users_LastName, Users_Username, Users_Password) " +
-                        $"VALUES (@Users_FirstName, @Users_LastName, @Users_Username, @Users_Password)", conn);
-
-                    using (cmd)
-                    {
-                        cmd.Parameters.AddWithValue("@Users_FirstName", $"{NewUser.FirstName}");
-                        cmd.Parameters.AddWithValue("@Users_LastName", $"{NewUser.LastName}");
-                        cmd.Parameters.AddWithValue("@Users_Username", $"{NewUser.UserName}");
-                        cmd.Parameters.AddWithValue("@Users_Password", $"{NewUser.Password}");
-                        cmd.ExecuteNonQuery();
-                    }
+                    _conn.Open();
                 }
+                MySqlCommand cmd = new MySqlCommand($"INSERT INTO Users (Users_FirstName, Users_LastName, Users_Username, Users_Password) " +
+                    $"VALUES (@Users_FirstName, @Users_LastName, @Users_Username, @Users_Password)", _conn);
+
+                using (cmd)
+                {
+                    cmd.Parameters.AddWithValue("@Users_FirstName", $"{NewUser.FirstName}");
+                    cmd.Parameters.AddWithValue("@Users_LastName", $"{NewUser.LastName}");
+                    cmd.Parameters.AddWithValue("@Users_Username", $"{NewUser.UserName}");
+                    cmd.Parameters.AddWithValue("@Users_Password", $"{NewUser.Password}");
+                    cmd.ExecuteNonQuery();
+                }
+
+                _conn.Close();
             }
             catch (Exception e)
             {
@@ -193,6 +198,33 @@ namespace QuizManagerApi.Domain.Connections
             }
 
             return GetUserByUsername(NewUser.UserName);
+        }
+
+        public User SetIsLoggedIn(User oUser)
+        {
+            try
+            {
+                if (_conn.State == System.Data.ConnectionState.Closed)
+                {
+                    _conn.Open();
+                }
+                MySqlCommand cmd = new MySqlCommand($"UPDATE Users SET Users_IsLoggedIn = @IsLoggedIn WHERE Users_Id = @UsersId", _conn);
+
+                using (cmd)
+                {
+                    cmd.Parameters.AddWithValue("@IsLoggedIn", $"{Convert.ToInt32(oUser.IsLoggedIn)}");
+                    cmd.Parameters.AddWithValue("@UsersId", $"{oUser.Id}");
+                    cmd.ExecuteNonQuery();
+                }
+
+                _conn.Close();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+
+            return oUser;
         }
     }
 }

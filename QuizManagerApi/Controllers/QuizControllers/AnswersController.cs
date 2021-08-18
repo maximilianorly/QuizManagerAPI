@@ -8,7 +8,7 @@ using QuizManagerApi.Domain.Models.AnswerOption;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace QuizManagerApi.Controllers.Quiz
+namespace QuizManagerApi.Controllers.QuizController
 {
     [Route("api/[controller]")]
     public class AnswersController : Controller

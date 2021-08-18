@@ -7,14 +7,17 @@
 
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.23" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Domain\" />
     <Folder Include="Domain\Models\" />
     <Folder Include="Domain\Connections\" />
     <Folder Include="Domain\Services\" />
-    <Folder Include="Controllers\Quiz\" />
-    <Folder Include="Domain\Services\Quiz\" />
+    <Folder Include="Controllers\QuizControllers\" />
+    <Folder Include="Domain\Services\QuizServices\" />
     <Folder Include="Domain\Connections\Quiz\" />
+    <Folder Include="Common\" />
+    <Folder Include="Domain\IService\" />
   </ItemGroup>
 </Project>

@@ -43,12 +43,14 @@ namespace QuizManagerApi.Domain.Connections
                                 Question = reader["Questions_Question"].ToString(),
                                 IsActive = reader.GetBoolean("Questions_IsActive"),
                                 Created = reader["Questions_Created"].ToString(),
-                                Modified = reader["Questions_Modified"].ToString()
+                                Modified = reader["Questions_Modified"].ToString(),
+                                QuizId = Convert.ToInt32(reader["Questions_QuizzesId"])
                             };
 
                             list.Add(_quizQuestion);
                         }
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)
@@ -79,12 +81,14 @@ namespace QuizManagerApi.Domain.Connections
                                 Question = reader["Questions_Question"].ToString(),
                                 IsActive = reader.GetBoolean("Questions_IsActive"),
                                 Created = reader["Questions_Created"].ToString(),
-                                Modified = reader["Questions_Modified"].ToString()
+                                Modified = reader["Questions_Modified"].ToString(),
+                                QuizId = Convert.ToInt32(reader["Questions_QuizzesId"])
                             };
 
                             list.Add(_quizQuestion);
                         }
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)
@@ -115,7 +119,8 @@ namespace QuizManagerApi.Domain.Connections
                                     Question = reader["Questions_Question"].ToString(),
                                     IsActive = reader.GetBoolean("Questions_IsActive"),
                                     Created = reader["Questions_Created"].ToString(),
-                                    Modified = reader["Questions_Modified"].ToString()
+                                    Modified = reader["Questions_Modified"].ToString(),
+                                    QuizId = Convert.ToInt32(reader["Questions_QuizzesId"])
                                 };
                             }
                         }
@@ -124,6 +129,7 @@ namespace QuizManagerApi.Domain.Connections
                             return null;
                         }
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)
@@ -156,7 +162,8 @@ namespace QuizManagerApi.Domain.Connections
                                     Question = reader["Questions_Question"].ToString(),
                                     IsActive = reader.GetBoolean("Questions_IsActive"),
                                     Created = reader["Questions_Created"].ToString(),
-                                    Modified = reader["Questions_Modified"].ToString()
+                                    Modified = reader["Questions_Modified"].ToString(),
+                                    QuizId = Convert.ToInt32(reader["Questions_QuizzesId"])
                                 };
                             }
                         }
@@ -165,6 +172,7 @@ namespace QuizManagerApi.Domain.Connections
                             return null;
                         }
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)
@@ -191,6 +199,7 @@ namespace QuizManagerApi.Domain.Connections
                         cmd.Parameters.AddWithValue("@Questions_IsActive", $"{Convert.ToInt32(Question.IsActive)}");
                         cmd.ExecuteNonQuery();
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)
@@ -217,6 +226,7 @@ namespace QuizManagerApi.Domain.Connections
                     {
                         hasRows = reader.HasRows;
                     }
+                    conn.Close();
                 }
             }
             catch (Exception e)

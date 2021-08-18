@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using QuizManagerApi.Domain.Connections;
+using QuizManagerApi.Domain.Models.User;
 using QuizManagerApi.Domain.Models.UserHasAccess;
+using QuizManagerApi.Domain.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -30,9 +32,12 @@ namespace QuizManagerApi.Controllers
         }
 
         // POST api/UserAccess
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("{newUserId}/{accessLevelId}")]
+        public void Post(int newUserId, int accessLevelId)
         {
+            UserService _userService = new UserService(HttpContext);
+
+            _userService.MapNewUserToAccessLevel(newUserId, accessLevelId);
         }
 
         // PUT api/UserAccess/5
