@@ -37,9 +37,19 @@ namespace QuizManagerApi.Domain.Services
 
             if (isValidPassword)
             {
+                SetIsLoggedIn(user);
                 return GetUserByUsername(oUser.Username);
             }
             return null;
+        }
+
+        public void SetIsLoggedIn(User oUser)
+        {
+            UsersConnection _usersConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.UsersConnection)) as UsersConnection;
+
+            oUser.IsLoggedIn = !oUser.IsLoggedIn;
+
+            _usersConnection.SetIsLoggedIn(oUser);
         }
 
         public User SignUp(User oUser)
@@ -133,6 +143,15 @@ namespace QuizManagerApi.Domain.Services
             UserHasAccess _userAccessDetail = _userAccessConnection.MapNewUserToAccessLevel(NewUserId, AccessLevel);
 
             return _userAccessDetail;
+        }
+
+        public User Logout(int UserId)
+        {
+            User _user = GetUserById(UserId);
+
+            SetIsLoggedIn(_user);
+
+            return _user;
         }
     }
 }

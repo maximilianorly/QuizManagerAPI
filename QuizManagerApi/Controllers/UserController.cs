@@ -17,13 +17,6 @@ namespace QuizManagerApi.Controllers
     public class UserController : Controller
     {
 
-        //IUserService _userService = null;
-
-        //public UserController(IUserService userService)
-        //{
-        //    _userService = userService;
-        //}
-
         // GET: api/user
         [HttpGet]
         public IEnumerable<User> Get()
@@ -44,7 +37,7 @@ namespace QuizManagerApi.Controllers
             return _user;
         }
 
-        // GET api/user/Login
+        // POST api/user/Login
         [HttpPost("Login")]
         public User Login([FromBody] LogInCredentials oUser)
         {
@@ -116,10 +109,14 @@ namespace QuizManagerApi.Controllers
 
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // PUT api/User/Logout/5
+        [HttpPut("Logout/{UserId}")]
+        public User Logout(int UserId)
         {
+            UserService _userService = new UserService(HttpContext);
+
+            return _userService.Logout(UserId);
+
         }
 
         // DELETE api/values/5

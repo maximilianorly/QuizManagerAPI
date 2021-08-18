@@ -40,7 +40,8 @@ namespace QuizManagerApi.Domain.Connections
                             FirstName = reader["Users_FirstName"].ToString(),
                             LastName = reader["Users_LastName"].ToString(),
                             UserName = reader["Users_Username"].ToString(),
-                            Password = reader["Users_Password"].ToString()
+                            Password = reader["Users_Password"].ToString(),
+                            IsLoggedIn = Convert.ToBoolean(reader["Users_IsLoggedIn"])
                         };
 
                         list.Add(_user);
@@ -80,7 +81,8 @@ namespace QuizManagerApi.Domain.Connections
                                     FirstName = reader["Users_FirstName"].ToString(),
                                     LastName = reader["Users_LastName"].ToString(),
                                     UserName = reader["Users_Username"].ToString(),
-                                    Password = reader["Users_Password"].ToString()
+                                    Password = reader["Users_Password"].ToString(),
+                                    IsLoggedIn = Convert.ToBoolean(reader["Users_IsLoggedIn"])
                                 };
                             }
                         }
@@ -122,7 +124,8 @@ namespace QuizManagerApi.Domain.Connections
                                     FirstName = reader["Users_FirstName"].ToString(),
                                     LastName = reader["Users_LastName"].ToString(),
                                     UserName = reader["Users_Username"].ToString(),
-                                    Password = reader["Users_Password"].ToString()
+                                    Password = reader["Users_Password"].ToString(),
+                                    IsLoggedIn = Convert.ToBoolean(reader["Users_IsLoggedIn"])
                                 };
                             }
                         }
@@ -195,6 +198,33 @@ namespace QuizManagerApi.Domain.Connections
             }
 
             return GetUserByUsername(NewUser.UserName);
+        }
+
+        public User SetIsLoggedIn(User oUser)
+        {
+            try
+            {
+                if (_conn.State == System.Data.ConnectionState.Closed)
+                {
+                    _conn.Open();
+                }
+                MySqlCommand cmd = new MySqlCommand($"UPDATE Users SET Users_IsLoggedIn = @IsLoggedIn WHERE Users_Id = @UsersId", _conn);
+
+                using (cmd)
+                {
+                    cmd.Parameters.AddWithValue("@IsLoggedIn", $"{Convert.ToInt32(oUser.IsLoggedIn)}");
+                    cmd.Parameters.AddWithValue("@UsersId", $"{oUser.Id}");
+                    cmd.ExecuteNonQuery();
+                }
+
+                _conn.Close();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+
+            return oUser;
         }
     }
 }
