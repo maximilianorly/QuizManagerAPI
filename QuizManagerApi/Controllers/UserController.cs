@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using QuizManagerApi.Domain.Connections;
 using QuizManagerApi.Domain.Services;
-using QuizManagerApi.Domain.Models.User;
+using QuizManagerApi.Domain.Models;
 using QuizManagerApi.Domain.Models.LogInCredentials;
 using Microsoft.AspNetCore.Mvc;
 using QuizManagerApi.Domain.IService;

@@ -52,5 +52,41 @@ namespace QuizManagerApi.Domain.Connections
             }
             return list;
         }
+
+
+        public Quiz CreateNewQuiz(Quiz NewQuiz)
+        {
+            try
+            {
+                if (_conn.State == System.Data.ConnectionState.Closed)
+                {
+                    _conn.Open();
+                }
+                MySqlCommand cmd = new MySqlCommand($"INSERT INTO Quizzes (Quizzes_IsActive, Quizzes_QuizName)" + $"VALUES (@IsActive, @QuizName); SELECT LAST_INSERT_ID()", _conn);
+
+                using (cmd)
+                {
+                    cmd.Parameters.AddWithValue("@IsActive", $"{Convert.ToInt32(NewQuiz.IsActive)}");
+                    cmd.Parameters.AddWithValue("@QuizName", $"{NewQuiz.Name}");
+                    NewQuiz.Id = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    //using (MySqlDataReader reader = cmd.ExecuteReader())
+                    //{
+                    //    while (reader.Read())
+                    //    {
+                    //    }
+                    //}
+                }
+
+                _conn.Close();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+
+            //change to get quiz by id
+            return NewQuiz;
+        }
     }
 }

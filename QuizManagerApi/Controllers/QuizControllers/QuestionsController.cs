@@ -4,22 +4,30 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using QuizManagerApi.Domain.Services;
-using QuizManagerApi.Domain.Models.QuizQuestion;
+using QuizManagerApi.Domain.Models;
+using MySql.Data.MySqlClient;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace QuizManagerApi.Controllers.QuizController
+namespace QuizManagerApi.Controllers.QuizControllers
 {
     [Route("api/[controller]")]
     public class QuestionsController : Controller
     {
+
+        public QuestionService _questionService;
+
+        public QuestionsController(MySqlConnection conn)
+        {
+            _questionService = new QuestionService(conn);
+        }
+
         // GET: api/Questions
         [HttpGet]
         public IEnumerable<QuizQuestion> Get()
         {
-            QuestionService _questionService = new QuestionService(HttpContext);
 
-            var _questions = _questionService.GetAllQuestions();
+            IEnumerable<QuizQuestion> _questions = _questionService.GetAllQuestions();
             return _questions;
         }
 
@@ -27,18 +35,14 @@ namespace QuizManagerApi.Controllers.QuizController
         [HttpGet("{Id}")]
         public QuizQuestion Get(int Id)
         {
-            QuestionService _questionService = new QuestionService(HttpContext);
-
-            var _question = _questionService.GetQuestionById(Id);
+            QuizQuestion _question = _questionService.GetQuestionById(Id);
             return _question;
         }
 
         [HttpGet("GetAllActiveQuestions")]
         public IEnumerable<QuizQuestion> GetAllActiveQuestions()
         {
-            QuestionService _questionService = new QuestionService(HttpContext);
-
-            var _questions = _questionService.GetAllActiveQuestions();
+            IEnumerable<QuizQuestion> _questions = _questionService.GetAllActiveQuestions();
             return _questions;
         }
 
@@ -47,9 +51,7 @@ namespace QuizManagerApi.Controllers.QuizController
         [HttpPost]
         public bool Post([FromBody] QuizQuestion Question)
         {
-            QuestionService _questionService = new QuestionService(HttpContext);
-
-            var _newQuestion = _questionService.CreateNewQuestion(Question);
+            QuizQuestion _newQuestion = _questionService.CreateNewQuestion(Question);
             bool _isNewQuestionCreationSuccessful = _questionService.IsNewQuestionCreationSuccessful(_newQuestion.Id);
 
             return _isNewQuestionCreationSuccessful;

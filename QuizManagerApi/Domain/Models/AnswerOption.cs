@@ -1,5 +1,6 @@
-﻿namespace QuizManagerApi.Domain.Models.AnswerOption
-{
+﻿namespace QuizManagerApi.Domain.Models
+{ 
+
     public class AnswerOption
     {
         public int Id { get; set; }

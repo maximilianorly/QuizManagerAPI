@@ -2,22 +2,30 @@
 using Microsoft.AspNetCore.Http;
 using QuizManagerApi.Domain.Connections;
 using System.Collections.Generic;
-using QuizManagerApi.Domain.Models.AnswerOption;
+using QuizManagerApi.Domain.Models;
+using MySql.Data.MySqlClient;
 
 namespace QuizManagerApi.Domain.Services
 {
     public class AnswerOptionService
     {
-        public HttpContext HttpContext { get; }
+        //public HttpContext HttpContext { get; }
 
-        public AnswerOptionService(HttpContext httpContext)
+        //public AnswerOptionService(HttpContext httpContext)
+        //{
+        //    HttpContext = httpContext;
+        //}
+
+        private readonly AnswerOptionConnection _answerOptionConnection;
+
+        public AnswerOptionService(MySqlConnection conn)
         {
-            HttpContext = httpContext;
+            _answerOptionConnection = new AnswerOptionConnection(conn);
         }
 
         public IEnumerable<AnswerOption> GetAllAnswers()
         {
-            AnswerOptionConnection _answerOptionConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.AnswerOptionConnection)) as AnswerOptionConnection;
+            //AnswerOptionConnection _answerOptionConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.AnswerOptionConnection)) as AnswerOptionConnection;
 
             var _answerOptions = _answerOptionConnection.GetAllAnswerOptions();
 
@@ -26,7 +34,7 @@ namespace QuizManagerApi.Domain.Services
 
         public List<AnswerOption> GetAllAnswerOptionsForQuestion(int QuestionId)
         {
-            AnswerOptionConnection _answerOptionConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.AnswerOptionConnection)) as AnswerOptionConnection;
+            //AnswerOptionConnection _answerOptionConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.AnswerOptionConnection)) as AnswerOptionConnection;
 
             var _answerOptions = _answerOptionConnection.GetAllAnswerOptionsForQuestion(QuestionId);
 
@@ -35,7 +43,7 @@ namespace QuizManagerApi.Domain.Services
 
         public AnswerOption CreateNewAnswerOption(AnswerOption Option)
         {
-            AnswerOptionConnection _answerOptionConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.AnswerOptionConnection)) as AnswerOptionConnection;
+            //AnswerOptionConnection _answerOptionConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.AnswerOptionConnection)) as AnswerOptionConnection;
 
             var _answerOption = _answerOptionConnection.CreateNewAnswerOption(Option);
 
@@ -44,7 +52,7 @@ namespace QuizManagerApi.Domain.Services
 
         public bool IsNewAnswerOptionCreationSuccessful(int AnswerOptionId)
         {
-            AnswerOptionConnection _answerOptionConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.AnswerOptionConnection)) as AnswerOptionConnection;
+            //AnswerOptionConnection _answerOptionConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.AnswerOptionConnection)) as AnswerOptionConnection;
 
             bool _isExistingAnswer = _answerOptionConnection.isNewAnswerOptionCreationSuccessful(AnswerOptionId);
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using QuizManagerApi.Domain.Models.LogInCredentials;
-using QuizManagerApi.Domain.Models.User;
+using QuizManagerApi.Domain.Models;
 using QuizManagerApi.Domain.Models.UserHasAccess;
 
 namespace QuizManagerApi.Domain.IService
