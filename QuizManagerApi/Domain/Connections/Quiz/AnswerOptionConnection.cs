@@ -1,4 +1,4 @@
-﻿using QuizManagerApi.Domain.Models.AnswerOption;
+﻿using QuizManagerApi.Domain.Models;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -8,18 +8,25 @@ namespace QuizManagerApi.Domain.Connections
 {
     public class AnswerOptionConnection
     {
-        public string ConnectionString { get; set; }
+        //public string ConnectionString { get; set; }
 
 
-        public AnswerOptionConnection(string connectionString)
+        //public AnswerOptionConnection(string connectionString)
+        //{
+        //    this.ConnectionString = connectionString;
+        //}
+
+
+        //private MySqlConnection GetConnection()
+        //{
+        //    return new MySqlConnection("Server=localhost; port=3306; Database=QuizManager; Uid=root; Pwd=password");
+        //}
+
+        private readonly MySqlConnection _conn;
+
+        public AnswerOptionConnection(MySqlConnection conn)
         {
-            this.ConnectionString = connectionString;
-        }
-
-
-        private MySqlConnection GetConnection()
-        {
-            return new MySqlConnection("Server=localhost; port=3306; Database=QuizManager; Uid=root; Pwd=password");
+            _conn = conn;
         }
 
         public List<AnswerOption> GetAllAnswerOptions()
@@ -28,10 +35,11 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
-                using (MySqlConnection conn = GetConnection())
+                if (_conn.State == System.Data.ConnectionState.Closed)
                 {
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM Question_AnswerOptions", conn);
+                    _conn.Open();
+                }
+                MySqlCommand cmd = new MySqlCommand("SELECT * FROM Question_AnswerOptions", _conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -50,8 +58,8 @@ namespace QuizManagerApi.Domain.Connections
                             list.Add(_answerOption);
                         }
                     }
-                    conn.Close();
-                }
+                    _conn.Close();
+                //}
             }
             catch (Exception e)
             {
@@ -66,10 +74,11 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
-                using (MySqlConnection conn = GetConnection())
+                if (_conn.State == System.Data.ConnectionState.Closed)
                 {
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Question_AnswerOptions WHERE Questions_Questions_Id = {QuestionId}", conn);
+                    _conn.Open();
+                }
+                MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Question_AnswerOptions WHERE Questions_Questions_Id = {QuestionId}", _conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -95,8 +104,8 @@ namespace QuizManagerApi.Domain.Connections
                             return null;
                         }
                     }
-                    conn.Close();
-                }
+                    _conn.Close();
+                //}
             }
             catch (Exception e)
             {
@@ -109,12 +118,13 @@ namespace QuizManagerApi.Domain.Connections
         {
             try
             {
-                using (MySqlConnection conn = GetConnection())
+                if (_conn.State == System.Data.ConnectionState.Closed)
                 {
-                    conn.Open();
-                    // Must find a way to allow quote and apostraphes in questions without SQL error
-                    // To get this method to succeed, the front end application will search string and apply a \ before posting.
-                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Question_AnswerOptions WHERE AnswerOption_Option = \"{NewAnswerOption.Option}\"", conn);
+                    _conn.Open();
+                }
+                // Must find a way to allow quote and apostraphes in questions without SQL error
+                // To get this method to succeed, the front end application will search string and apply a \ before posting.
+                MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Question_AnswerOptions WHERE AnswerOption_Option = \"{NewAnswerOption.Option}\"", _conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -138,8 +148,8 @@ namespace QuizManagerApi.Domain.Connections
                             return null;
                         }
                     }
-                    conn.Close();
-                }
+                    _conn.Close();
+                //}
             }
             catch (Exception e)
             {
@@ -152,12 +162,13 @@ namespace QuizManagerApi.Domain.Connections
         {
             try
             {
-                using (MySqlConnection conn = GetConnection())
+                if (_conn.State == System.Data.ConnectionState.Closed)
                 {
-                    conn.Open();
-                    // For MVP new question IsActive will be default posted as true, after MVP development will accommodate for Admin to select active questions from a list of all questions in DB
-                    MySqlCommand cmd = new MySqlCommand($"INSERT INTO Question_AnswerOptions (Questions_Questions_Id, AnswerOption_IsCorrectOption, AnswerOption_Option) " +
-                        $"VALUES (@Questions_Questions_Id, @AnswerOption_IsCorrectOption, @AnswerOption_Option)", conn);
+                    _conn.Open();
+                }
+                // For MVP new question IsActive will be default posted as true, after MVP development will accommodate for Admin to select active questions from a list of all questions in DB
+                MySqlCommand cmd = new MySqlCommand($"INSERT INTO Question_AnswerOptions (Questions_Questions_Id, AnswerOption_IsCorrectOption, AnswerOption_Option) " +
+                        $"VALUES (@Questions_Questions_Id, @AnswerOption_IsCorrectOption, @AnswerOption_Option)", _conn);
 
                     using (cmd)
                     {
@@ -166,8 +177,8 @@ namespace QuizManagerApi.Domain.Connections
                         cmd.Parameters.AddWithValue("@AnswerOption_Option", $"{NewAnswerOption.Option}");
                         cmd.ExecuteNonQuery();
                     }
-                    conn.Close();
-                }
+                    _conn.Close();
+                //}
             }
             catch (Exception e)
             {
@@ -184,17 +195,18 @@ namespace QuizManagerApi.Domain.Connections
             try
             {
 
-                using (MySqlConnection conn = GetConnection())
+                if (_conn.State == System.Data.ConnectionState.Closed)
                 {
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Question_AnswerOptions WHERE AnswerOption_Id = {AnswerOptionId}", conn);
+                    _conn.Open();
+                }
+                MySqlCommand cmd = new MySqlCommand($"SELECT * FROM Question_AnswerOptions WHERE AnswerOption_Id = {AnswerOptionId}", _conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
                         hasRows = reader.HasRows;
                     }
-                    conn.Close();
-                }
+                    _conn.Close();
+                //}
             }
             catch (Exception e)
             {

@@ -4,7 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using QuizManagerApi.Domain.Services;
-using QuizManagerApi.Domain.Models.AnswerOption;
+using QuizManagerApi.Domain.Models;
+using MySql.Data.MySqlClient;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,13 +14,19 @@ namespace QuizManagerApi.Controllers.QuizControllers
     [Route("api/[controller]")]
     public class AnswersController : Controller
     {
+
+        public AnswerOptionService _answerOptionService;
+
+        public AnswersController(MySqlConnection conn)
+        {
+            _answerOptionService = new AnswerOptionService(conn);
+        }
+
         // GET: api/answers
         [HttpGet]
         public IEnumerable<AnswerOption> Get()
         {
-            AnswerOptionService _answerOptionService = new AnswerOptionService(HttpContext);
-
-            var _answers = _answerOptionService.GetAllAnswers();
+            IEnumerable<AnswerOption> _answers = _answerOptionService.GetAllAnswers();
             return _answers;
         }
 
@@ -27,9 +34,7 @@ namespace QuizManagerApi.Controllers.QuizControllers
         [HttpGet("GetAllAnswerOptionsForQuestion/{QuestionId}")]
         public List<AnswerOption> GetAllAnswerOptionsForQuestion(int QuestionId)
         {
-            AnswerOptionService _answerOptionService = new AnswerOptionService(HttpContext);
-
-            var _answers = _answerOptionService.GetAllAnswerOptionsForQuestion(QuestionId);
+            List<AnswerOption> _answers = _answerOptionService.GetAllAnswerOptionsForQuestion(QuestionId);
             return _answers;
         }
 
@@ -37,9 +42,7 @@ namespace QuizManagerApi.Controllers.QuizControllers
         [HttpPost]
         public bool Post([FromBody] AnswerOption Option)
         {
-            AnswerOptionService _answerOptionService = new AnswerOptionService(HttpContext);
-
-            var _newAnswerOption = _answerOptionService.CreateNewAnswerOption(Option);
+            AnswerOption _newAnswerOption = _answerOptionService.CreateNewAnswerOption(Option);
             bool _isNewAnswerOptionCreationSuccessful = _answerOptionService.IsNewAnswerOptionCreationSuccessful(_newAnswerOption.Id);
 
             return _isNewAnswerOptionCreationSuccessful;

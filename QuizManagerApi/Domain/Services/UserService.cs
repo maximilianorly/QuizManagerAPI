@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
 using QuizManagerApi.Domain.Models.LogInCredentials;
-using QuizManagerApi.Domain.Models.User;
+using QuizManagerApi.Domain.Models;
 using QuizManagerApi.Domain.Models.UserHasAccess;
 using QuizManagerApi.Domain.Connections;
 using System.Collections.Generic;

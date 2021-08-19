@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
+using QuizManagerApi.Common;
 using QuizManagerApi.Domain.Models;
 using QuizManagerApi.Domain.Services;
 
@@ -32,22 +33,27 @@ namespace QuizManagerApi.Controllers.QuizControllers
             return _quizzes;
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET: api/Quiz/5
+        [HttpGet("{QuizId}")]
+        public IEnumerable<QuizQuestion> GetQuizQuestionsByQuizId(int QuizId)
         {
-            return "value";
+            IEnumerable<QuizQuestion> _quizzes = _quizService.GetQuizQuestionsByQuizId(QuizId);
+
+            return _quizzes;
         }
 
-        // POST api/values
+        // POST api/Quiz
         [HttpPost]
-        public void Post([FromBody] string value)
+        public Quiz Post([FromBody] QuizHasQuestionsAndAnswers newQuiz)
         {
+            Quiz _newQuiz = _quizService.CreateNewQuiz(newQuiz);
+
+            return _newQuiz;
         }
 
         // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("{QuizId}")]
+        public void Put(int QuizId, [FromBody] string value)
         {
         }
 

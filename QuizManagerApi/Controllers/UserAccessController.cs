@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using QuizManagerApi.Domain.Connections;
-using QuizManagerApi.Domain.Models.User;
+using QuizManagerApi.Domain.Models;
 using QuizManagerApi.Domain.Models.UserHasAccess;
 using QuizManagerApi.Domain.Services;
 

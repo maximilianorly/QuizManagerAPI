@@ -1,4 +1,4 @@
-﻿namespace QuizManagerApi.Domain.Models.QuizQuestion
+﻿namespace QuizManagerApi.Domain.Models
 {
     public class QuizQuestion
     {
