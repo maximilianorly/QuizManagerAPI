@@ -61,12 +61,14 @@ namespace QuizManagerApi.Domain.Services
             _usersConnection.SetIsLoggedIn(oUser);
         }
 
-        public User SignUp(User oUser)
+        public User SignUp(User oUser, int AccessLevelId)
         {
             oUser.Password = BCrypt.Net.BCrypt.HashPassword(oUser.Password);
             Global.Users.Add(oUser);
 
             User _newUser = CreateUser(oUser);
+            UserHasAccess _accessLevel = MapNewUserToAccessLevel(_newUser.Id, AccessLevelId);
+
 
             return _newUser;
         }

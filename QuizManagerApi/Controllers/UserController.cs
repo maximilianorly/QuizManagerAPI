@@ -55,12 +55,12 @@ namespace QuizManagerApi.Controllers
             return _user;
         }
 
-        // POST api/user/Signup
-        [HttpPost("Signup")]
-        public User SignUp([FromBody] User oUser)
+        // POST api/user/Signup/5
+        [HttpPost("Signup/{AccessLevelId}")]
+        public User SignUp(int AccessLevelId, [FromBody] User oUser)
         {
 
-            User _user = _userService.SignUp(oUser);
+            User _user = _userService.SignUp(oUser, AccessLevelId);
 
             return _user;
         }

@@ -7,7 +7,7 @@ namespace QuizManagerApi.Domain.IService
 {
     public interface IUserService
     {
-        User SignUp(User oUser);
+        User SignUp(User oUser, int AccessLevelId);
 
         UserHasAccess Login(LogInCredentials oUser);
 

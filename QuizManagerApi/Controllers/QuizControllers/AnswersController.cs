@@ -34,10 +34,10 @@ namespace QuizManagerApi.Controllers.QuizControllers
         }
 
         [HttpPost("GetAllAnswerOptionsForQuestion/{QuestionId}")]
-        public List<AnswerOption> GetAllAnswerOptionsForQuestion(int QuestionId, [FromBody] int UserId)
+        public List<AnswerOption> GetAllAnswerOptionsForQuestion(int QuestionId, [FromBody] UserHasAccess UserAccess)
         {
             List<AnswerOption> _answers = new List<AnswerOption>();
-            bool _isAccessRestricted = _accessLevelService.IsAccessRestricted(UserId);
+            bool _isAccessRestricted = _accessLevelService.IsAccessRestricted(UserAccess.UserId);
 
             if (!_isAccessRestricted)
             {
