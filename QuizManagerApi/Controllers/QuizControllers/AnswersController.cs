@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuizManagerApi.Domain.Services;
 using QuizManagerApi.Domain.Models;
 using MySql.Data.MySqlClient;
+using QuizManagerApi.Domain.Enums;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,12 +17,12 @@ namespace QuizManagerApi.Controllers.QuizControllers
     {
 
         public AnswerOptionService _answerOptionService;
-        public UserService _userService;
+        public AccessLevelService _accessLevelService;
 
         public AnswersController(MySqlConnection conn)
         {
             _answerOptionService = new AnswerOptionService(conn);
-            _userService = new UserService(conn);
+            _accessLevelService = new AccessLevelService(conn);
         }
 
         // GET: api/answers
@@ -36,9 +37,9 @@ namespace QuizManagerApi.Controllers.QuizControllers
         public List<AnswerOption> GetAllAnswerOptionsForQuestion(int QuestionId, [FromBody] int UserId)
         {
             List<AnswerOption> _answers = new List<AnswerOption>();
-            int _userAccessLevel = _userService.GetUserAccessByUserId(UserId).AccessLevelId;
+            bool _isAccessRestricted = _accessLevelService.IsAccessRestricted(UserId);
 
-            if (_userAccessLevel != 3)
+            if (!_isAccessRestricted)
             {
                 _answers = _answerOptionService.GetAllAnswerOptionsForQuestion(QuestionId);
             }
