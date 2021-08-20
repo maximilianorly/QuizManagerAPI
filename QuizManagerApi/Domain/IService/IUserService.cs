@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using QuizManagerApi.Domain.Models.LogInCredentials;
 using QuizManagerApi.Domain.Models;
-using QuizManagerApi.Domain.Models.UserHasAccess;
 
 namespace QuizManagerApi.Domain.IService
 {
@@ -10,7 +9,7 @@ namespace QuizManagerApi.Domain.IService
     {
         User SignUp(User oUser);
 
-        User Login(LogInCredentials oUser);
+        UserHasAccess Login(LogInCredentials oUser);
 
         IEnumerable<User> GetAllUsers();
 

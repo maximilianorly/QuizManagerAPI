@@ -3,21 +3,21 @@ using Microsoft.AspNetCore.Http;
 using QuizManagerApi.Domain.Connections;
 using System.Collections.Generic;
 using QuizManagerApi.Domain.Models.AccessLevel;
+using MySql.Data.MySqlClient;
 
 namespace QuizManagerApi.Domain.Services
 {
     public class AccessLevelService
     {
-        public HttpContext HttpContext { get; }
+        private readonly AccessLevelConnection _accessLevelConnection;
 
-        public AccessLevelService(HttpContext httpContext)
+        public AccessLevelService(MySqlConnection conn)
         {
-            HttpContext = httpContext;
+            _accessLevelConnection = new AccessLevelConnection(conn);
         }
 
         public IEnumerable<AccessLevel> GetAllAccessLevels()
         {
-            AccessLevelConnection _accessLevelConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.AccessLevelConnection)) as AccessLevelConnection;
 
             var _accessLevels = _accessLevelConnection.GetAllAccessLevels();
 

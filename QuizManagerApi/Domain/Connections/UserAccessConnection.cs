@@ -1,5 +1,4 @@
 ﻿using QuizManagerApi.Domain.Models;
-using QuizManagerApi.Domain.Models.UserHasAccess;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -9,19 +8,11 @@ namespace QuizManagerApi.Domain.Connections
 {
     public class UserAccessConnection
     {
-        public string ConnectionString { get; set; }
+        private readonly MySqlConnection _conn;
 
-
-        public UserAccessConnection(string connectionString)
+        public UserAccessConnection(MySqlConnection conn)
         {
-            this.ConnectionString = connectionString;
-        }
-
-
-        private MySqlConnection GetConnection()
-        {
-            //return new MySqlConnection(ConnectionString);
-            return new MySqlConnection("Server=localhost; port=3306; Database=QuizManager; Uid=root; Pwd=password");
+            _conn = conn;
         }
 
 
@@ -30,10 +21,11 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
-                using (MySqlConnection conn = GetConnection())
+                if (_conn.State == System.Data.ConnectionState.Closed)
                 {
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"SELECT * FROM UserHasAccess WHERE Users_Users_Id = {UserId}", conn);
+                    _conn.Open();
+                }
+                MySqlCommand cmd = new MySqlCommand($"SELECT * FROM UserHasAccess WHERE Users_Users_Id = {UserId}", _conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -54,8 +46,7 @@ namespace QuizManagerApi.Domain.Connections
                             return null;
                         }
                     }
-                    conn.Close();
-                }
+                    _conn.Close();
             }
             catch (Exception e)
             {
@@ -68,11 +59,12 @@ namespace QuizManagerApi.Domain.Connections
         {
             try
             {
-                using (MySqlConnection conn = GetConnection())
+                if (_conn.State == System.Data.ConnectionState.Closed)
                 {
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand($"INSERT INTO UserHasAccess (AccessLevels_AccessLevels_Id, Users_Users_Id) " +
-                        $"VALUES (@AccessLevels_AccessLevels_Id, @Users_Users_Id)", conn);
+                    _conn.Open();
+                }
+                MySqlCommand cmd = new MySqlCommand($"INSERT INTO UserHasAccess (AccessLevels_AccessLevels_Id, Users_Users_Id) " +
+                        $"VALUES (@AccessLevels_AccessLevels_Id, @Users_Users_Id)", _conn);
 
                     using (cmd)
                     {
@@ -80,8 +72,7 @@ namespace QuizManagerApi.Domain.Connections
                         cmd.Parameters.AddWithValue("@Users_Users_Id", $"{NewUserId}");
                         cmd.ExecuteNonQuery();
                     }
-                    conn.Close();
-                }
+                    _conn.Close();
             }
             catch (Exception e)
             {

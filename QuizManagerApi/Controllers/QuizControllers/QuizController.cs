@@ -37,9 +37,9 @@ namespace QuizManagerApi.Controllers.QuizControllers
         [HttpGet("{QuizId}")]
         public IEnumerable<QuizQuestion> GetQuizQuestionsByQuizId(int QuizId)
         {
-            IEnumerable<QuizQuestion> _quizzes = _quizService.GetQuizQuestionsByQuizId(QuizId);
+            IEnumerable<QuizQuestion> _questions = _quizService.GetQuizQuestionsByQuizId(QuizId);
 
-            return _quizzes;
+            return _questions;
         }
 
         // POST api/Quiz

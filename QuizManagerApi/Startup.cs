@@ -45,8 +45,8 @@ namespace QuizManagerApi
 
             //services.AddSingleton<IQuizService, QuizService>();
             services.Add(new ServiceDescriptor(typeof(UsersConnection), new UsersConnection(conn)));
-            services.Add(new ServiceDescriptor(typeof(UserAccessConnection), new UserAccessConnection(Configuration.GetConnectionString(""))));
-            services.Add(new ServiceDescriptor(typeof(AccessLevelConnection), new AccessLevelConnection(Configuration.GetConnectionString(""))));
+            services.Add(new ServiceDescriptor(typeof(UserAccessConnection), new UserAccessConnection(conn)));
+            services.Add(new ServiceDescriptor(typeof(AccessLevelConnection), new AccessLevelConnection(conn)));
             services.Add(new ServiceDescriptor(typeof(QuestionConnection), new QuestionConnection(conn)));
             services.Add(new ServiceDescriptor(typeof(AnswerOptionConnection), new AnswerOptionConnection(conn)));
             services.Add(new ServiceDescriptor(typeof(QuizConnection), new QuizConnection(conn)));
@@ -74,7 +74,7 @@ namespace QuizManagerApi
 
             // Use cross origin
             app.UseCors(bldr => bldr.WithOrigins("http://localhost:8080")
-                .WithMethods("GET", "POST")
+                .WithMethods("GET", "POST", "PUT")
                 .AllowAnyHeader());
 
             app.UseHttpsRedirection();

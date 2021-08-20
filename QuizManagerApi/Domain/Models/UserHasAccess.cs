@@ -1,4 +1,4 @@
-﻿namespace QuizManagerApi.Domain.Models.UserHasAccess
+﻿namespace QuizManagerApi.Domain.Models
 {
     public class UserHasAccess
     {

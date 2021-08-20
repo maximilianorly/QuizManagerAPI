@@ -2,24 +2,17 @@
 using Microsoft.AspNetCore.Http;
 using QuizManagerApi.Domain.Models.LogInCredentials;
 using QuizManagerApi.Domain.Models;
-using QuizManagerApi.Domain.Models.UserHasAccess;
 using QuizManagerApi.Domain.Connections;
 using System.Collections.Generic;
 using QuizManagerApi.Domain.IService;
 using QuizManagerApi.Common;
 using System.Linq;
+using MySql.Data.MySqlClient;
 
 namespace QuizManagerApi.Domain.Services
 {
     public class UserService : IUserService
     {
-        public HttpContext HttpContext { get; }
-
-        public UserService(HttpContext httpContext)
-        {
-            HttpContext = httpContext;
-        }
-
         //private UsersConnection UsersConnection { get; }
         //private UserAccessConnection UserAccessConnection { get; }
 
@@ -28,8 +21,17 @@ namespace QuizManagerApi.Domain.Services
         //    UsersConnection = usersConnection;
         //    UserAccessConnection = userAccessConnection;
         //}
-        
-        public User Login(LogInCredentials oUser)
+
+        private readonly UsersConnection _usersConnection;
+        private readonly UserAccessConnection _userAccessConnection;
+
+        public UserService(MySqlConnection conn)
+        {
+            _usersConnection = new UsersConnection(conn);
+            _userAccessConnection = new UserAccessConnection(conn);
+        }
+
+        public UserHasAccess Login(LogInCredentials oUser)
         {
             var user = Global.Users.SingleOrDefault(u => u.UserName == oUser.Username);
 
@@ -38,15 +40,22 @@ namespace QuizManagerApi.Domain.Services
             if (isValidPassword)
             {
                 SetIsLoggedIn(user);
-                return GetUserByUsername(oUser.Username);
+                User _user =  GetUserByUsername(oUser.Username);
+                UserHasAccess _userHasAccess = GetUserAccessByUserId(_user.Id);
+                return _userHasAccess;
             }
             return null;
         }
 
+        public UserHasAccess GetUserAccessByUserId(int Id)
+        {
+            UserHasAccess _userHasAccess = _userAccessConnection.GetUserAccessByUserId(Id);
+
+            return _userHasAccess;
+        }
+
         public void SetIsLoggedIn(User oUser)
         {
-            UsersConnection _usersConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.UsersConnection)) as UsersConnection;
-
             oUser.IsLoggedIn = !oUser.IsLoggedIn;
 
             _usersConnection.SetIsLoggedIn(oUser);
@@ -64,7 +73,6 @@ namespace QuizManagerApi.Domain.Services
 
         public IEnumerable<User> GetAllUsers()
         {
-            UsersConnection _usersConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.UsersConnection)) as UsersConnection;
             //UsersConnection _usersConnection = UsersConnection;
 
             List<User> _users = _usersConnection.GetAllUsers();
@@ -85,7 +93,6 @@ namespace QuizManagerApi.Domain.Services
 
         public User GetUserById(int Id)
         {
-            UsersConnection _usersConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.UsersConnection)) as UsersConnection;
             //UsersConnection _usersConnection = UsersConnection;
 
             User _user = _usersConnection.GetUserById(Id);
@@ -95,7 +102,6 @@ namespace QuizManagerApi.Domain.Services
 
         public User GetUserByUsername(string Username)
         {
-            UsersConnection _usersConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.UsersConnection)) as UsersConnection;
             //UsersConnection _usersConnection = UsersConnection;
 
             User _user = _usersConnection.GetUserByUsername(Username);
@@ -116,7 +122,6 @@ namespace QuizManagerApi.Domain.Services
 
         public bool IsExistingUser(string Username)
         {
-            UsersConnection _usersConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.UsersConnection)) as UsersConnection;
             //UsersConnection _usersConnection = UsersConnection;
 
             return _usersConnection.IsExistingUser(Username);
@@ -124,7 +129,6 @@ namespace QuizManagerApi.Domain.Services
 
         public User CreateUser(User NewUser)
         {
-            UsersConnection _usersConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.UsersConnection)) as UsersConnection;
             //UsersConnection _usersConnection = UsersConnection;
 
             User _user = _usersConnection.CreateUser(NewUser);
@@ -137,7 +141,6 @@ namespace QuizManagerApi.Domain.Services
             {
                 AccessLevel = 3;
             }
-            UserAccessConnection _userAccessConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.UserAccessConnection)) as UserAccessConnection;
             //UserAccessConnection _userAccessConnection = UserAccessConnection;
 
             UserHasAccess _userAccessDetail = _userAccessConnection.MapNewUserToAccessLevel(NewUserId, AccessLevel);
