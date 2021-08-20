@@ -16,10 +16,12 @@ namespace QuizManagerApi.Controllers.QuizControllers
     {
 
         public AnswerOptionService _answerOptionService;
+        public UserService _userService;
 
         public AnswersController(MySqlConnection conn)
         {
             _answerOptionService = new AnswerOptionService(conn);
+            _userService = new UserService(conn);
         }
 
         // GET: api/answers
@@ -30,11 +32,17 @@ namespace QuizManagerApi.Controllers.QuizControllers
             return _answers;
         }
 
-        // GET api/answers/5
-        [HttpGet("GetAllAnswerOptionsForQuestion/{QuestionId}")]
-        public List<AnswerOption> GetAllAnswerOptionsForQuestion(int QuestionId)
+        [HttpPost("GetAllAnswerOptionsForQuestion/{QuestionId}")]
+        public List<AnswerOption> GetAllAnswerOptionsForQuestion(int QuestionId, [FromBody] int UserId)
         {
-            List<AnswerOption> _answers = _answerOptionService.GetAllAnswerOptionsForQuestion(QuestionId);
+            List<AnswerOption> _answers = new List<AnswerOption>();
+            int _userAccessLevel = _userService.GetUserAccessByUserId(UserId).AccessLevelId;
+
+            if (_userAccessLevel != 3)
+            {
+                _answers = _answerOptionService.GetAllAnswerOptionsForQuestion(QuestionId);
+            }
+
             return _answers;
         }
 
