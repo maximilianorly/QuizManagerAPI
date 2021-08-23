@@ -7,6 +7,6 @@ namespace QuizManagerApi.Domain.Models
     public class QuizHasQuestionsAndAnswers
     {
         public string QuizName { get; set; }
-        public List<QuestionHasAnswers> QuestionWithAnswers { get; set; }
+        public List<QuestionHasAnswers> QuestionsWithAnswers { get; set; }
     }
 }

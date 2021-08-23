@@ -26,6 +26,15 @@ namespace QuizManagerApi.Controllers.QuizControllers
 
         // GET: api/Quiz
         [HttpGet]
+        public IEnumerable<Quiz> GetAllQuizzes()
+        {
+            IEnumerable<Quiz> _quizzes = _quizService.GetAllQuizzes();
+
+            return _quizzes;
+        }
+
+        //GET api/Quiz/Active
+        [HttpGet("Active")]
         public IEnumerable<Quiz> GetAllActiveQuizzes()
         {
             IEnumerable<Quiz> _quizzes = _quizService.GetAllActiveQuizzes();
@@ -51,10 +60,13 @@ namespace QuizManagerApi.Controllers.QuizControllers
             return _newQuiz;
         }
 
-        // PUT api/values/5
-        [HttpPut("{QuizId}")]
-        public void Put(int QuizId, [FromBody] string value)
+        // PUT api/Quiz/5/true
+        [HttpPut("{QuizId}/{IsActive}")]
+        public Quiz Put(int QuizId, bool IsActive)
         {
+            Quiz _quiz = _quizService.UpdateQuizSetIsActive(QuizId, IsActive);
+
+            return _quiz;
         }
 
         // DELETE api/values/5

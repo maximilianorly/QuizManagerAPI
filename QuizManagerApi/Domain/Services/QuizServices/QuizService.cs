@@ -27,10 +27,16 @@ namespace QuizManagerApi.Domain.Services
             _answerOptionService = new AnswerOptionService(conn);
         }
 
+        public IEnumerable<Quiz> GetAllQuizzes()
+        {
+            List<Quiz> _quizzes = _quizConnection.GetAllQuizzes();
+
+            return _quizzes.AsEnumerable();
+        }
 
         public IEnumerable<Quiz> GetAllActiveQuizzes()
         {
-            IEnumerable<Quiz> _quizzes = _quizConnection.GetAllActiveQuizzes();
+            List<Quiz> _quizzes = _quizConnection.GetAllActiveQuizzes();
 
             return _quizzes.AsEnumerable();
         }
@@ -68,7 +74,7 @@ namespace QuizManagerApi.Domain.Services
             List<QuizQuestion> _quizQuestions = new List<QuizQuestion>();
             List<AnswerOption> _questionAnswers = new List<AnswerOption>();
 
-            foreach (QuestionHasAnswers question in NewQuiz.QuestionWithAnswers)
+            foreach (QuestionHasAnswers question in NewQuiz.QuestionsWithAnswers)
             {
                 QuizQuestion _quizQuestion = new QuizQuestion();
                 _quizQuestion.Question = question.Question;
@@ -102,5 +108,14 @@ namespace QuizManagerApi.Domain.Services
 
             return _answer;
         }
+
+        public Quiz UpdateQuizSetIsActive(int QuizId, bool IsActive)
+        {
+            bool _newIsActiveValue = !IsActive;
+            Quiz _quiz = _quizConnection.UpdateQuizSetIsActive(QuizId, _newIsActiveValue);
+
+            return _quiz;
+        }
     }
+
 }
