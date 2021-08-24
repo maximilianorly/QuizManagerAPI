@@ -118,11 +118,5 @@ namespace QuizManagerApi.Controllers
         {
             return _userService.Logout(UserId);
         }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

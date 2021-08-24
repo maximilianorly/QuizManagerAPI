@@ -56,17 +56,5 @@ namespace QuizManagerApi.Controllers.QuizControllers
 
             return _isNewAnswerOptionCreationSuccessful;
         }
-
-        // PUT api/answers/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/answers/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

@@ -42,17 +42,5 @@ namespace QuizManagerApi.Controllers
         {
             _userService.MapNewUserToAccessLevel(newUserId, accessLevelId);
         }
-
-        // PUT api/UserAccess/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/UserAccess/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }
