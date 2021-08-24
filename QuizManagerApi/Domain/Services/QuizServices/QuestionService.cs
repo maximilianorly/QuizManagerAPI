@@ -9,13 +9,6 @@ namespace QuizManagerApi.Domain.Services
 {
     public class QuestionService
     {
-        //public HttpContext HttpContext { get; }
-
-        //public QuestionService(HttpContext httpContext)
-        //{
-        //    HttpContext = httpContext;
-        //}
-
         private readonly QuestionConnection _questionConnection;
 
         public QuestionService(MySqlConnection conn)
@@ -25,8 +18,6 @@ namespace QuizManagerApi.Domain.Services
 
         public IEnumerable<QuizQuestion> GetAllQuestions()
         {
-            //QuestionConnection _questionConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.QuestionConnection)) as QuestionConnection;
-
             var _quizQuestions = _questionConnection.GetAllQuizQuestions();
 
             return _quizQuestions;
@@ -41,8 +32,6 @@ namespace QuizManagerApi.Domain.Services
 
         public IEnumerable<QuizQuestion> GetAllActiveQuestions()
         {
-            //QuestionConnection _questionConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.QuestionConnection)) as QuestionConnection;
-
             var _quizQuestions = _questionConnection.GetAllActiveQuizQuestions();
 
             return _quizQuestions;
@@ -50,8 +39,6 @@ namespace QuizManagerApi.Domain.Services
 
         public QuizQuestion GetQuestionById(int Id)
         {
-            //QuestionConnection _questionConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.QuestionConnection)) as QuestionConnection;
-
             var _quizQuestion = _questionConnection.GetQuizQuestionById(Id);
 
             return _quizQuestion;
@@ -59,8 +46,6 @@ namespace QuizManagerApi.Domain.Services
 
         public QuizQuestion CreateNewQuestion(QuizQuestion Question)
         {
-            //QuestionConnection _questionConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.QuestionConnection)) as QuestionConnection;
-
             var _quizQuestion = _questionConnection.CreateNewQuizQuestion(Question);
 
             return _quizQuestion;
@@ -68,8 +53,6 @@ namespace QuizManagerApi.Domain.Services
 
         public bool IsNewQuestionCreationSuccessful(int QuestionId)
         {
-            //QuestionConnection _questionConnection = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.QuestionConnection)) as QuestionConnection;
-
             var _quizQuestion = _questionConnection.isNewQuestionCreationSuccessful(QuestionId);
 
             return _quizQuestion;

@@ -9,11 +9,6 @@ namespace QuizManagerApi.Domain.Services
 {
     public class QuizService
     {
-        //public QuizService()
-        //{
-
-        //}
-
         private readonly QuizConnection _quizConnection;
 
         private readonly QuestionService _questionService;
@@ -57,14 +52,8 @@ namespace QuizManagerApi.Domain.Services
             _newQuiz.IsActive = true;
 
             _newQuiz = _quizConnection.CreateNewQuiz(_newQuiz);
-            //Global.Quizzes.Add() 
 
             List<QuizQuestion> _quizQuestions = MapQuestionsToQuiz(_newQuiz.Id, NewQuiz);
-
-            //foreach(QuizQuestion question in _quizQuestions)
-            //{
-
-            //}
 
             return _newQuiz;
         }

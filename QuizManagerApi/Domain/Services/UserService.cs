@@ -13,15 +13,6 @@ namespace QuizManagerApi.Domain.Services
 {
     public class UserService : IUserService
     {
-        //private UsersConnection UsersConnection { get; }
-        //private UserAccessConnection UserAccessConnection { get; }
-
-        //public UserService(UsersConnection usersConnection, UserAccessConnection userAccessConnection)
-        //{
-        //    UsersConnection = usersConnection;
-        //    UserAccessConnection = userAccessConnection;
-        //}
-
         private readonly UsersConnection _usersConnection;
         private readonly UserAccessConnection _userAccessConnection;
 
@@ -75,8 +66,6 @@ namespace QuizManagerApi.Domain.Services
 
         public IEnumerable<User> GetAllUsers()
         {
-            //UsersConnection _usersConnection = UsersConnection;
-
             List<User> _users = _usersConnection.GetAllUsers();
 
             if (!Global.Users.Except(_users).Any())
@@ -95,8 +84,6 @@ namespace QuizManagerApi.Domain.Services
 
         public User GetUserById(int Id)
         {
-            //UsersConnection _usersConnection = UsersConnection;
-
             User _user = _usersConnection.GetUserById(Id);
 
             return _user;
@@ -104,35 +91,18 @@ namespace QuizManagerApi.Domain.Services
 
         public User GetUserByUsername(string Username)
         {
-            //UsersConnection _usersConnection = UsersConnection;
-
             User _user = _usersConnection.GetUserByUsername(Username);
 
             return _user;
         }
 
-        //public bool ValidateCredentials(LogInCredentials SuppliedCredentials, LogInCredentials ActualCredentials)
-        //{
-        //    if (SuppliedCredentials.Username == ActualCredentials.Username)
-        //        if (SuppliedCredentials.Password == ActualCredentials.Password)
-        //            return true;
-        //        else
-        //            return false;
-        //    else
-        //        return false;
-        //}
-
         public bool IsExistingUser(string Username)
         {
-            //UsersConnection _usersConnection = UsersConnection;
-
             return _usersConnection.IsExistingUser(Username);
         }
 
         public User CreateUser(User NewUser)
         {
-            //UsersConnection _usersConnection = UsersConnection;
-
             User _user = _usersConnection.CreateUser(NewUser);
             return _user;
         }
@@ -143,7 +113,6 @@ namespace QuizManagerApi.Domain.Services
             {
                 AccessLevel = 3;
             }
-            //UserAccessConnection _userAccessConnection = UserAccessConnection;
 
             UserHasAccess _userAccessDetail = _userAccessConnection.MapNewUserToAccessLevel(NewUserId, AccessLevel);
 

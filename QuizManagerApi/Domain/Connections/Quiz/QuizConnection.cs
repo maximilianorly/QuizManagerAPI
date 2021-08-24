@@ -155,7 +155,7 @@ namespace QuizManagerApi.Domain.Connections
                 Debug.WriteLine(e);
             }
 
-            //change to get quiz by id
+            //TODO: change to get quiz by id
             return NewQuiz;
         }
 

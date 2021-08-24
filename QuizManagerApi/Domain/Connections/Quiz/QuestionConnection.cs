@@ -8,20 +8,6 @@ namespace QuizManagerApi.Domain.Connections
 {
     public class QuestionConnection
     {
-        //public string ConnectionString { get; set; }
-
-
-        //public QuestionConnection(string connectionString)
-        //{
-        //    this.ConnectionString = connectionString;
-        //}
-
-
-        //private MySqlConnection GetConnection()
-        //{
-        //    return new MySqlConnection("Server=localhost; port=3306; Database=QuizManager; Uid=root; Pwd=password");
-        //}
-
         private readonly MySqlConnection _conn;
 
         public QuestionConnection(MySqlConnection conn)
@@ -35,9 +21,6 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
-                //using (MySqlConnection conn = GetConnection())
-                //{
-                //    conn.Open();
                 if (_conn.State == System.Data.ConnectionState.Closed)
                 {
                     _conn.Open();
@@ -62,7 +45,6 @@ namespace QuizManagerApi.Domain.Connections
                         }
                     }
                     _conn.Close();
-                //}
             }
             catch (Exception e)
             {
@@ -115,9 +97,6 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
-                //using (MySqlConnection conn = GetConnection())
-                //{
-                //    conn.Open();
                 if (_conn.State == System.Data.ConnectionState.Closed)
                 {
                     _conn.Open();
@@ -142,7 +121,6 @@ namespace QuizManagerApi.Domain.Connections
                         }
                     }
                     _conn.Close();
-                //}
             }
             catch (Exception e)
             {
@@ -155,9 +133,6 @@ namespace QuizManagerApi.Domain.Connections
         {
             try
             {
-                //using (MySqlConnection conn = GetConnection())
-                //{
-                //    conn.Open();
                 if (_conn.State == System.Data.ConnectionState.Closed)
                 {
                     _conn.Open();
@@ -187,7 +162,6 @@ namespace QuizManagerApi.Domain.Connections
                         }
                     }
                     _conn.Close();
-                //}
             }
             catch (Exception e)
             {
@@ -200,10 +174,6 @@ namespace QuizManagerApi.Domain.Connections
         {
             try
             {
-                //using (MySqlConnection conn = GetConnection())
-                //{
-                //    conn.Open();
-
                 if (_conn.State == System.Data.ConnectionState.Closed)
                 {
                     _conn.Open();
@@ -235,7 +205,6 @@ namespace QuizManagerApi.Domain.Connections
                         }
                     }
                     _conn.Close();
-                //}
             }
             catch (Exception e)
             {
@@ -248,9 +217,6 @@ namespace QuizManagerApi.Domain.Connections
         {
             try
             {
-                //using (MySqlConnection conn = GetConnection())
-                //{
-                //    conn.Open();
                 if (_conn.State == System.Data.ConnectionState.Closed)
                 {
                     _conn.Open();
@@ -263,11 +229,10 @@ namespace QuizManagerApi.Domain.Connections
                     {
                         cmd.Parameters.AddWithValue("@Questions_Question", $"{Question.Question}");
                         cmd.Parameters.AddWithValue("@Questions_IsActive", $"{Convert.ToInt32(Question.IsActive)}");
-                    cmd.Parameters.AddWithValue("@Questions_QuizId", $"{Question.QuizId}");
+                        cmd.Parameters.AddWithValue("@Questions_QuizId", $"{Question.QuizId}");
                         cmd.ExecuteNonQuery();
                     }
                     _conn.Close();
-                //}
             }
             catch (Exception e)
             {
@@ -283,10 +248,6 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
-
-                //using (MySqlConnection conn = GetConnection())
-                //{
-                //    conn.Open();
                 if (_conn.State == System.Data.ConnectionState.Closed)
                 {
                     _conn.Open();
@@ -298,7 +259,6 @@ namespace QuizManagerApi.Domain.Connections
                         hasRows = reader.HasRows;
                     }
                     _conn.Close();
-                //}
             }
             catch (Exception e)
             {
