@@ -8,20 +8,6 @@ namespace QuizManagerApi.Domain.Connections
 {
     public class AnswerOptionConnection
     {
-        //public string ConnectionString { get; set; }
-
-
-        //public AnswerOptionConnection(string connectionString)
-        //{
-        //    this.ConnectionString = connectionString;
-        //}
-
-
-        //private MySqlConnection GetConnection()
-        //{
-        //    return new MySqlConnection("Server=localhost; port=3306; Database=QuizManager; Uid=root; Pwd=password");
-        //}
-
         private readonly MySqlConnection _conn;
 
         public AnswerOptionConnection(MySqlConnection conn)
@@ -59,7 +45,6 @@ namespace QuizManagerApi.Domain.Connections
                         }
                     }
                     _conn.Close();
-                //}
             }
             catch (Exception e)
             {
@@ -105,7 +90,6 @@ namespace QuizManagerApi.Domain.Connections
                         }
                     }
                     _conn.Close();
-                //}
             }
             catch (Exception e)
             {
@@ -149,7 +133,6 @@ namespace QuizManagerApi.Domain.Connections
                         }
                     }
                     _conn.Close();
-                //}
             }
             catch (Exception e)
             {
@@ -178,7 +161,6 @@ namespace QuizManagerApi.Domain.Connections
                         cmd.ExecuteNonQuery();
                     }
                     _conn.Close();
-                //}
             }
             catch (Exception e)
             {
@@ -206,7 +188,6 @@ namespace QuizManagerApi.Domain.Connections
                         hasRows = reader.HasRows;
                     }
                     _conn.Close();
-                //}
             }
             catch (Exception e)
             {
@@ -214,5 +195,29 @@ namespace QuizManagerApi.Domain.Connections
             }
             return hasRows;
         }
+
+        public void DeleteAnswersForQuestion(int QuestionId)
+        {
+            try
+            {
+
+                if (_conn.State == System.Data.ConnectionState.Closed)
+                {
+                    _conn.Open();
+                }
+                MySqlCommand cmd = new MySqlCommand($"DELETE FROM Question_AnswerOptions WHERE Questions_Questions_Id = {QuestionId}", _conn);
+
+                using (cmd)
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                _conn.Close();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+        }
     }
+
 }

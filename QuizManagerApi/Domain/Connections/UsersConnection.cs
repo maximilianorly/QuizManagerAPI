@@ -1,5 +1,4 @@
 ﻿using QuizManagerApi.Domain.Models;
-using QuizManagerApi.Domain.Models.UserHasAccess;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;

@@ -8,18 +8,11 @@ namespace QuizManagerApi.Domain.Connections
 {
     public class AccessLevelConnection
     {
-        public string ConnectionString { get; set; }
+        private readonly MySqlConnection _conn;
 
-
-        public AccessLevelConnection(string connectionString)
+        public AccessLevelConnection(MySqlConnection conn)
         {
-            this.ConnectionString = connectionString;
-        }
-
-
-        private MySqlConnection GetConnection()
-        {
-            return new MySqlConnection("Server=localhost; port=3306; Database=QuizManager; Uid=root; Pwd=password");
+            _conn = conn;
         }
 
         public List<AccessLevel> GetAllAccessLevels()
@@ -28,10 +21,11 @@ namespace QuizManagerApi.Domain.Connections
 
             try
             {
-                using (MySqlConnection conn = GetConnection())
+                if (_conn.State == System.Data.ConnectionState.Closed)
                 {
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM AccessLevels", conn);
+                    _conn.Open();
+                }
+                MySqlCommand cmd = new MySqlCommand("SELECT * FROM AccessLevels", _conn);
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -47,8 +41,7 @@ namespace QuizManagerApi.Domain.Connections
                             list.Add(_accessLevel);
                         }
                     }
-                    conn.Close();
-                }
+                    _conn.Close();
             }
             catch (Exception e)
             {

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuizManagerApi.Domain.Services;
 using QuizManagerApi.Domain.Models;
 using MySql.Data.MySqlClient;
+using QuizManagerApi.Domain.Enums;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,10 +17,12 @@ namespace QuizManagerApi.Controllers.QuizControllers
     {
 
         public AnswerOptionService _answerOptionService;
+        public AccessLevelService _accessLevelService;
 
         public AnswersController(MySqlConnection conn)
         {
             _answerOptionService = new AnswerOptionService(conn);
+            _accessLevelService = new AccessLevelService(conn);
         }
 
         // GET: api/answers
@@ -30,11 +33,17 @@ namespace QuizManagerApi.Controllers.QuizControllers
             return _answers;
         }
 
-        // GET api/answers/5
-        [HttpGet("GetAllAnswerOptionsForQuestion/{QuestionId}")]
-        public List<AnswerOption> GetAllAnswerOptionsForQuestion(int QuestionId)
+        [HttpPost("GetAllAnswerOptionsForQuestion/{QuestionId}")]
+        public List<AnswerOption> GetAllAnswerOptionsForQuestion(int QuestionId, [FromBody] UserHasAccess UserAccess)
         {
-            List<AnswerOption> _answers = _answerOptionService.GetAllAnswerOptionsForQuestion(QuestionId);
+            List<AnswerOption> _answers = new List<AnswerOption>();
+            bool _isAccessRestricted = _accessLevelService.IsAccessRestricted(UserAccess.UserId);
+
+            if (!_isAccessRestricted)
+            {
+                _answers = _answerOptionService.GetAllAnswerOptionsForQuestion(QuestionId);
+            }
+
             return _answers;
         }
 
@@ -46,18 +55,6 @@ namespace QuizManagerApi.Controllers.QuizControllers
             bool _isNewAnswerOptionCreationSuccessful = _answerOptionService.IsNewAnswerOptionCreationSuccessful(_newAnswerOption.Id);
 
             return _isNewAnswerOptionCreationSuccessful;
-        }
-
-        // PUT api/answers/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/answers/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

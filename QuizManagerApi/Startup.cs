@@ -43,26 +43,13 @@ namespace QuizManagerApi
 
             services.AddControllers();
 
-            //services.AddSingleton<IQuizService, QuizService>();
             services.Add(new ServiceDescriptor(typeof(UsersConnection), new UsersConnection(conn)));
-            services.Add(new ServiceDescriptor(typeof(UserAccessConnection), new UserAccessConnection(Configuration.GetConnectionString(""))));
-            services.Add(new ServiceDescriptor(typeof(AccessLevelConnection), new AccessLevelConnection(Configuration.GetConnectionString(""))));
+            services.Add(new ServiceDescriptor(typeof(UserAccessConnection), new UserAccessConnection(conn)));
+            services.Add(new ServiceDescriptor(typeof(AccessLevelConnection), new AccessLevelConnection(conn)));
             services.Add(new ServiceDescriptor(typeof(QuestionConnection), new QuestionConnection(conn)));
             services.Add(new ServiceDescriptor(typeof(AnswerOptionConnection), new AnswerOptionConnection(conn)));
             services.Add(new ServiceDescriptor(typeof(QuizConnection), new QuizConnection(conn)));
-
-            //services.AddSingleton(new UsersConnection(conn));
-            //services.AddSingleton(new UserAccessConnection(Configuration.GetConnectionString("")));
-            //services.AddSingleton<IUserService, UserService>();
-            //services.AddSingleton(new AccessLevelConnection(Configuration.GetConnectionString("")));
-            //services.AddSingleton(new QuestionConnection(Configuration.GetConnectionString("")));
-            //services.AddSingleton(new AnswerOptionConnection(Configuration.GetConnectionString("")));
         }
-
-        //private MySqlConnection GetConnection()
-        //{
-        //    return new MySqlConnection("Server=localhost; port=3306; Database=QuizManager; Uid=root; Pwd=password");
-        //}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -74,7 +61,7 @@ namespace QuizManagerApi
 
             // Use cross origin
             app.UseCors(bldr => bldr.WithOrigins("http://localhost:8080")
-                .WithMethods("GET", "POST")
+                .WithMethods("GET", "POST", "PUT")
                 .AllowAnyHeader());
 
             app.UseHttpsRedirection();

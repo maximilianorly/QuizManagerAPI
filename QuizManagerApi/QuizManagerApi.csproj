@@ -19,5 +19,6 @@
     <Folder Include="Domain\Connections\Quiz\" />
     <Folder Include="Common\" />
     <Folder Include="Domain\IService\" />
+    <Folder Include="Domain\Enums\" />
   </ItemGroup>
 </Project>

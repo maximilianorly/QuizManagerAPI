@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using MySql.Data.MySqlClient;
 using QuizManagerApi.Domain.Connections;
 using QuizManagerApi.Domain.Models;
-using QuizManagerApi.Domain.Models.UserHasAccess;
 using QuizManagerApi.Domain.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,6 +13,13 @@ namespace QuizManagerApi.Controllers
     [Route("api/[controller]")]
     public class UserAccessController : Controller
     {
+
+        public UserService _userService;
+
+        public UserAccessController(MySqlConnection conn)
+        {
+            _userService = new UserService(conn);
+        }
         // GET: api/UserAccess
         [HttpGet]
         public IEnumerable<string> Get()
@@ -24,32 +31,16 @@ namespace QuizManagerApi.Controllers
         [HttpGet("{UserId}")]
         public UserHasAccess Get(int UserId)
         {
-            UserAccessConnection context = HttpContext.RequestServices.GetService(typeof(QuizManagerApi.Domain.Connections.UserAccessConnection)) as UserAccessConnection;
+            UserHasAccess _userHasAccess = _userService.GetUserAccessByUserId(UserId);
 
-            var data = context.GetUserAccessByUserId(UserId);
-            Console.WriteLine(data);
-            return data;
+            return _userHasAccess;
         }
 
         // POST api/UserAccess
         [HttpPost("{newUserId}/{accessLevelId}")]
         public void Post(int newUserId, int accessLevelId)
         {
-            UserService _userService = new UserService(HttpContext);
-
             _userService.MapNewUserToAccessLevel(newUserId, accessLevelId);
-        }
-
-        // PUT api/UserAccess/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/UserAccess/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

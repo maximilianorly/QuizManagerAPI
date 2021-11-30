@@ -8,6 +8,7 @@ using QuizManagerApi.Domain.Models;
 using QuizManagerApi.Domain.Models.LogInCredentials;
 using Microsoft.AspNetCore.Mvc;
 using QuizManagerApi.Domain.IService;
+using MySql.Data.MySqlClient;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,11 +18,19 @@ namespace QuizManagerApi.Controllers
     public class UserController : Controller
     {
 
+        public UserService _userService;
+        public AccessLevelService _accessLevelService;
+
+        public UserController(MySqlConnection conn)
+        {
+            _userService = new UserService(conn);
+            _accessLevelService = new AccessLevelService(conn);
+        }
+
         // GET: api/user
         [HttpGet]
         public IEnumerable<User> Get()
         {
-            UserService _userService = new UserService(HttpContext);
 
             var _users = _userService.GetAllUsers();
             return _users; 
@@ -31,7 +40,6 @@ namespace QuizManagerApi.Controllers
         [HttpGet("{Id}")]
         public User Get(int Id)
         {
-            UserService _userService = new UserService(HttpContext);
 
             var _user = _userService.GetUserById(Id);
             return _user;
@@ -39,22 +47,20 @@ namespace QuizManagerApi.Controllers
 
         // POST api/user/Login
         [HttpPost("Login")]
-        public User Login([FromBody] LogInCredentials oUser)
+        public UserHasAccess Login([FromBody] LogInCredentials oUser)
         {
-            UserService _userService = new UserService(HttpContext);
 
-            User _user = _userService.Login(oUser);
+            UserHasAccess _user = _userService.Login(oUser);
 
             return _user;
         }
 
-        // POST api/user/Signup
-        [HttpPost("Signup")]
-        public User SignUp([FromBody] User oUser)
+        // POST api/user/Signup/5
+        [HttpPost("Signup/{AccessLevelId}")]
+        public User SignUp(int AccessLevelId, [FromBody] User oUser)
         {
-            UserService _userService = new UserService(HttpContext);
 
-            User _user = _userService.SignUp(oUser);
+            User _user = _userService.SignUp(oUser, AccessLevelId);
 
             return _user;
         }
@@ -63,7 +69,6 @@ namespace QuizManagerApi.Controllers
         [HttpPost]
         public User Post([FromBody] LogInCredentials SuppliedCredentials )
         {
-            UserService _userService = new UserService(HttpContext);
 
             var _user = _userService.GetUserByUsername(SuppliedCredentials.Username);
 
@@ -96,8 +101,6 @@ namespace QuizManagerApi.Controllers
         [Route("[action]")]
         public IEnumerable<User> PostNewUser([FromBody] User NewUser, int AccessLevel)
         {
-            UserService _userService = new UserService(HttpContext);
-            AccessLevelService _accessLevelService = new AccessLevelService(HttpContext);
 
             if (!_userService.IsExistingUser(NewUser.UserName))
             {
@@ -113,16 +116,7 @@ namespace QuizManagerApi.Controllers
         [HttpPut("Logout/{UserId}")]
         public User Logout(int UserId)
         {
-            UserService _userService = new UserService(HttpContext);
-
             return _userService.Logout(UserId);
-
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

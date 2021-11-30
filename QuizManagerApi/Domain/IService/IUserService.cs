@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using QuizManagerApi.Domain.Models.LogInCredentials;
 using QuizManagerApi.Domain.Models;
-using QuizManagerApi.Domain.Models.UserHasAccess;
 
 namespace QuizManagerApi.Domain.IService
 {
     public interface IUserService
     {
-        User SignUp(User oUser);
+        User SignUp(User oUser, int AccessLevelId);
 
-        User Login(LogInCredentials oUser);
+        UserHasAccess Login(LogInCredentials oUser);
 
         IEnumerable<User> GetAllUsers();
 
