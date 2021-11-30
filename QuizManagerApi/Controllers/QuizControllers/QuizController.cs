@@ -60,6 +60,15 @@ namespace QuizManagerApi.Controllers.QuizControllers
             return _newQuiz;
         }
 
+        // PUT api/Quiz/5
+        [HttpPut("updateQuestion/{QuizId}/{UserId}")]
+        public IEnumerable<QuizQuestion> Put(int QuizId, int UserId, [FromBody] QuestionHasAnswers NewQuestionWithAnswers)
+        {
+            IEnumerable<QuizQuestion> _updatedQuizQuestion = _quizService.UpdateQuiz(QuizId, UserId, NewQuestionWithAnswers, NewQuestionWithAnswers.QuestionId);
+
+            return _updatedQuizQuestion;
+        }
+
         // PUT api/Quiz/5/true
         [HttpPut("{QuizId}/{IsActive}")]
         public Quiz Put(int QuizId, bool IsActive)

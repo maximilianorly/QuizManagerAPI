@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using QuizManagerApi.Domain.Models;
 using MySql.Data.MySqlClient;
 using System.Linq;
+using QuizManagerApi.Domain.Enums;
 
 namespace QuizManagerApi.Domain.Services
 {
@@ -14,12 +15,14 @@ namespace QuizManagerApi.Domain.Services
         private readonly QuestionService _questionService;
 
         private readonly AnswerOptionService _answerOptionService;
+        private readonly UserService _userService;
 
         public QuizService(MySqlConnection conn)
         {
             _quizConnection = new QuizConnection(conn);
             _questionService = new QuestionService(conn);
             _answerOptionService = new AnswerOptionService(conn);
+            _userService = new UserService(conn);
         }
 
         public IEnumerable<Quiz> GetAllQuizzes()
@@ -53,36 +56,33 @@ namespace QuizManagerApi.Domain.Services
 
             _newQuiz = _quizConnection.CreateNewQuiz(_newQuiz);
 
-            List<QuizQuestion> _quizQuestions = MapQuestionsToQuiz(_newQuiz.Id, NewQuiz);
+            foreach (QuestionHasAnswers question in NewQuiz.QuestionsWithAnswers)
+            {
+                QuizQuestion _quizQuestions = MapQuestionToQuiz(_newQuiz.Id, question);
+            }
 
             return _newQuiz;
         }
 
-        public List<QuizQuestion> MapQuestionsToQuiz(int NewQuizId, QuizHasQuestionsAndAnswers NewQuiz)
+        public QuizQuestion MapQuestionToQuiz(int NewQuizId, QuestionHasAnswers NewQuestionWithAnswers)
         {
-            List<QuizQuestion> _quizQuestions = new List<QuizQuestion>();
             List<AnswerOption> _questionAnswers = new List<AnswerOption>();
 
-            foreach (QuestionHasAnswers question in NewQuiz.QuestionsWithAnswers)
-            {
                 QuizQuestion _quizQuestion = new QuizQuestion();
-                _quizQuestion.Question = question.Question;
+                _quizQuestion.Question = NewQuestionWithAnswers.Question;
                 _quizQuestion.IsActive = true;
                 _quizQuestion.QuizId = NewQuizId;
 
                 QuizQuestion _createdQuestion = _questionService.CreateNewQuestion(_quizQuestion);
-                _quizQuestions.Add(_createdQuestion);
 
-                foreach (AnswerWithIsCorrect answer in question.Answers)
+                foreach (AnswerWithIsCorrect answer in NewQuestionWithAnswers.Answers)
                 {
                     _questionAnswers.Add(MapAnswersToQuestion(_createdQuestion.Id, answer));
 
 
                 }
 
-            }
-
-            return _quizQuestions;
+            return _createdQuestion;
         }
 
         public AnswerOption MapAnswersToQuestion(int QuestionId, AnswerWithIsCorrect Answer)
@@ -104,6 +104,43 @@ namespace QuizManagerApi.Domain.Services
             Quiz _quiz = _quizConnection.UpdateQuizSetIsActive(QuizId, _newIsActiveValue);
 
             return _quiz;
+        }
+
+        public IEnumerable<QuizQuestion> UpdateQuiz(int QuizId, int UserId, QuestionHasAnswers NewQuestionWithAnswers, int? QuestionId)
+        {
+            int accessLevel = _userService.GetUserAccessByUserId(UserId).AccessLevelId;
+
+            if (!accessLevel.Equals((int)UserAccessEnum.Admin))
+            {
+                return null;
+            }
+
+            if (QuestionId != null)
+            {
+                QuizQuestion _quizQuestion = _questionService.GetQuestionById(QuestionId.Value);
+
+                if (NewQuestionWithAnswers.Question != _quizQuestion.Question)
+                {
+                    QuizQuestion _setQuestionInactive = _questionService.SetQuestionActiveState(QuestionId.Value, false);
+                    QuizQuestion _newQuestion = MapQuestionToQuiz(QuizId, NewQuestionWithAnswers);
+                }
+                else
+                {
+                    _answerOptionService.DeleteAnswersForQuestion(QuestionId.Value);
+
+                    NewQuestionWithAnswers.Answers.ForEach(answer =>
+                    {
+                        MapAnswersToQuestion(QuestionId.Value, answer);
+                    });
+                }
+            }
+            else
+            {
+                QuizQuestion _newQuestion = MapQuestionToQuiz(QuizId, NewQuestionWithAnswers);
+            }
+
+
+            return GetQuizQuestionsByQuizId(QuizId);
         }
     }
 

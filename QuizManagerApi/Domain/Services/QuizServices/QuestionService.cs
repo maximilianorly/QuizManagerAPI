@@ -57,5 +57,12 @@ namespace QuizManagerApi.Domain.Services
 
             return _quizQuestion;
         }
+
+        public QuizQuestion SetQuestionActiveState(int QuestionId, bool IsActive)
+        {
+            QuizQuestion _question = _questionConnection.SetQuestionActiveState(QuestionId, IsActive);
+
+            return _question;
+        }
     }
 }

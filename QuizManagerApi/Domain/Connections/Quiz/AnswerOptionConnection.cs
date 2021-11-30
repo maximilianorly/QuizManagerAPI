@@ -195,5 +195,29 @@ namespace QuizManagerApi.Domain.Connections
             }
             return hasRows;
         }
+
+        public void DeleteAnswersForQuestion(int QuestionId)
+        {
+            try
+            {
+
+                if (_conn.State == System.Data.ConnectionState.Closed)
+                {
+                    _conn.Open();
+                }
+                MySqlCommand cmd = new MySqlCommand($"DELETE FROM Question_AnswerOptions WHERE Questions_Questions_Id = {QuestionId}", _conn);
+
+                using (cmd)
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                _conn.Close();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+        }
     }
+
 }

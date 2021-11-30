@@ -44,5 +44,10 @@ namespace QuizManagerApi.Domain.Services
 
             return _isExistingAnswer;
         }
+
+        public void DeleteAnswersForQuestion(int QuestionId)
+        {
+            _answerOptionConnection.DeleteAnswersForQuestion(QuestionId);
+        }
     }
 }

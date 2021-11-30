@@ -266,5 +266,32 @@ namespace QuizManagerApi.Domain.Connections
             }
             return hasRows;
         }
+
+        public QuizQuestion SetQuestionActiveState(int QuestionId, bool IsActive)
+        {
+            try
+            {
+                if (_conn.State == System.Data.ConnectionState.Closed)
+                {
+                    _conn.Open();
+                }
+                MySqlCommand cmd = new MySqlCommand($"UPDATE Questions SET Questions_IsActive = @IsActive WHERE Questions_Id = @QuestionId", _conn);
+
+                using (cmd)
+                {
+                    cmd.Parameters.AddWithValue("@IsActive", $"{Convert.ToInt32(IsActive)}");
+                    cmd.Parameters.AddWithValue("@QuestionId", $"{QuestionId}");
+                    cmd.ExecuteNonQuery();
+                }
+
+                _conn.Close();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+
+            return GetQuizQuestionById(QuestionId);
+        }
     }
 }
